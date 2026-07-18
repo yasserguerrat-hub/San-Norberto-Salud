@@ -13,10 +13,10 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex w-full max-w-[340px] flex-col gap-6">
+    <div className="flex w-full max-w-[380px] flex-col gap-4">
       <LoginForm />
       {isDemoMode && (
-        <div className="rounded-lg border border-dashed border-secondary/40 bg-secondary/5 p-3 text-[11.5px] leading-relaxed text-muted-foreground">
+        <div className="rounded-md border border-dashed border-secondary/40 bg-secondary/5 p-3 text-[11.5px] leading-relaxed text-muted-foreground">
           <p className="mb-1 font-semibold text-foreground">Modo demo</p>
           <p>
             Usa <span className="font-medium text-foreground">admin@sannorbertosalud.cl</span> (administrador) o{' '}
