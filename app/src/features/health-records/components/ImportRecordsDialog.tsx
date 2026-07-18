@@ -13,6 +13,7 @@ import { clinicsRepository } from '@/data/repositories/clinics.repository'
 import { diseasesRepository } from '@/data/repositories/diseases.repository'
 import { genderCategoriesRepository } from '@/data/repositories/genderCategories.repository'
 import { healthRecordsRepository } from '@/data/repositories/healthRecords.repository'
+import { importBatchesRepository, importRowsRepository } from '@/data/repositories/importBatches.repository'
 import { sectorsRepository } from '@/data/repositories/sectors.repository'
 import { useCurrentProfile } from '@/features/auth/store/session.store'
 import { queryKeys } from '@/lib/query/queryKeys'
@@ -80,30 +81,64 @@ export function ImportRecordsDialog({ open, onOpenChange }: ImportRecordsDialogP
 
     setIsImporting(true)
     try {
-      await Promise.all(
-        aImportar.map((row) =>
-          healthRecordsRepository.create({
-            alcance: row.resuelto!.clinic_id ? 'clinica' : 'sector',
-            clinic_id: row.resuelto!.clinic_id,
-            sector_id: row.resuelto!.sector_id,
-            disease_id: row.resuelto!.disease_id,
-            age_range_id: row.resuelto!.age_range_id,
-            gender_id: row.resuelto!.gender_id,
-            mes: row.resuelto!.mes,
-            anio: row.resuelto!.anio,
-            cantidad_casos: row.resuelto!.cantidad_casos,
-            estado: 'pendiente',
-            origen: 'importado',
-            fuente: fileName,
-            observacion_revision: null,
-            creado_por: profile.id,
-            aprobado_por: null,
-            fecha_aprobacion: null,
-            creado_en: new Date().toISOString(),
-            actualizado_en: new Date().toISOString(),
+      // Control de importaciones (PRD §9): cada carga queda registrada como import_batches,
+      // con una import_rows por fila del archivo (incluidas, con error o excluidas), para
+      // trazabilidad completa fila por fila (RF-18) más allá de los registros que sí se crean.
+      const batch = await importBatchesRepository.create({
+        nombre_archivo: fileName,
+        clinic_id: profile.rol === 'usuario_clinica' ? profile.clinic_id : null,
+        estado: 'validando',
+        total_filas: rows.length,
+        filas_validas: rows.filter((row) => row.estado === 'valida').length,
+        filas_con_error: rows.filter((row) => row.estado === 'error').length,
+        creado_por: profile.id,
+        creado_en: new Date().toISOString(),
+      })
+
+      const createdByRow = new Map(
+        await Promise.all(
+          aImportar.map(async (row) => {
+            const record = await healthRecordsRepository.create({
+              alcance: row.resuelto!.clinic_id ? 'clinica' : 'sector',
+              clinic_id: row.resuelto!.clinic_id,
+              sector_id: row.resuelto!.sector_id,
+              disease_id: row.resuelto!.disease_id,
+              age_range_id: row.resuelto!.age_range_id,
+              gender_id: row.resuelto!.gender_id,
+              mes: row.resuelto!.mes,
+              anio: row.resuelto!.anio,
+              cantidad_casos: row.resuelto!.cantidad_casos,
+              estado: 'pendiente',
+              origen: 'importado',
+              fuente: fileName,
+              observacion_revision: null,
+              creado_por: profile.id,
+              aprobado_por: null,
+              fecha_aprobacion: null,
+              creado_en: new Date().toISOString(),
+              actualizado_en: new Date().toISOString(),
+            })
+            return [row, record] as const
           }),
         ),
       )
+
+      await Promise.all(
+        rows.map((row) =>
+          importRowsRepository.create({
+            import_batch_id: batch.id,
+            numero_fila: row.numero_fila,
+            datos_originales: row.datosOriginales,
+            estado: row.incluida ? row.estado : 'excluida',
+            errores: row.errores,
+            es_posible_duplicado: row.esPosibleDuplicado,
+            health_record_id: createdByRow.get(row)?.id ?? null,
+          }),
+        ),
+      )
+
+      await importBatchesRepository.update(batch.id, { estado: 'confirmado' })
+
       await queryClient.invalidateQueries({ queryKey: queryKeys.healthRecords.all })
       toastSuccess(`${aImportar.length} registro(s) importado(s)`, 'Quedaron pendientes de aprobación.')
       resetState()
