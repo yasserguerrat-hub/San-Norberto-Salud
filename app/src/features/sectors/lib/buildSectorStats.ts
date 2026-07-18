@@ -56,6 +56,7 @@ export function buildSectorStats({ sectors, records, sectorPopulation, diseases,
       tasaLabel: tasaResultado.suficiente ? formatRate(tasaResultado.tasa!) : MENSAJE_POBLACION_INSUFICIENTE,
       riesgo,
       enfermedadPrincipal: diseases.find((d) => d.id === enfermedadPrincipalId)?.nombre ?? null,
+      coordenadas: sector.coordenadas,
     }
   })
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { DemoDataBadge } from '@/components/shared/badges/DemoDataBadge'
-import { SectorMap } from '@/components/shared/sector-map/SectorMap'
+import { SectorRiskMap } from '@/components/shared/sector-map/SectorRiskMap'
 import { QueryStateBoundary } from '@/components/shared/states/QueryStateBoundary'
 import { SectorDetailCard } from '../components/SectorDetailCard'
 import { SectorListPanel } from '../components/SectorListPanel'
@@ -15,7 +15,7 @@ export function SectorsPage() {
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <p className="max-w-[560px] text-[12.5px] leading-relaxed text-muted-foreground">
-          Mapa esquemático por sector (no georreferenciado con precisión) — preparado para integrar polígonos GeoJSON.
+          Mapa por coordenadas de sector, coloreado según nivel de riesgo — preparado para evolucionar a polígonos GeoJSON.
         </p>
         <DemoDataBadge />
       </div>
@@ -35,8 +35,16 @@ export function SectorsPage() {
                   onSelect={(id) => setSelectedId((current) => (current === id ? null : id))}
                 />
                 <div className="rounded-[10px] border border-border bg-card p-5">
-                  <SectorMap
-                    sectors={sectors.map((s) => ({ id: s.id, name: s.name, poblacion: s.poblacion, riskLevel: s.riesgo ?? 'bajo' }))}
+                  <SectorRiskMap
+                    sectors={sectors.map((s) => ({
+                      id: s.id,
+                      name: s.name,
+                      tipo: s.tipo,
+                      poblacionFmt: s.poblacionFmt,
+                      tasaLabel: s.tasaLabel,
+                      riskLevel: s.riesgo,
+                      coordenadas: s.coordenadas,
+                    }))}
                     selectedId={selectedId}
                     onSelect={(id) => setSelectedId((current) => (current === id ? null : id))}
                   />

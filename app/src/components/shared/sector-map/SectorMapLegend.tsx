@@ -14,6 +14,10 @@ export function SectorMapLegend() {
           {RISK_LABELS[level]}
         </div>
       ))}
+      <div className="flex items-center gap-1.5">
+        <span className="size-2.5 rounded-[3px] bg-[#9AA5AC]" aria-hidden="true" />
+        Sin datos
+      </div>
     </div>
   )
 }

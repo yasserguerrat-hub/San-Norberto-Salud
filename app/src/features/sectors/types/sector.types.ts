@@ -10,4 +10,5 @@ export interface SectorWithStats {
   tasaLabel: string
   riesgo: NivelRiesgo | null
   enfermedadPrincipal: string | null
+  coordenadas: { lat: number; lng: number } | null
 }
