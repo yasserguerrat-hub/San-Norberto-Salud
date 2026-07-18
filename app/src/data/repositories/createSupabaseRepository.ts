@@ -51,7 +51,14 @@ export function createSupabaseRepository<T extends WithId>(table: string) {
 
     async remove(id: string): Promise<void> {
       const { error } = await supabase.from(table).delete().eq('id', id)
-      if (error) throw new Error(error.message)
+      if (error) {
+        // 23503 = foreign_key_violation: RF-05 exige poder eliminar catálogos "sin dependencias";
+        // el mensaje crudo de Postgres es técnico, se traduce a algo accionable para el usuario.
+        if (error.code === '23503') {
+          throw new Error('No se puede eliminar: hay otros registros que todavía dependen de este elemento.')
+        }
+        throw new Error(error.message)
+      }
     },
   }
 }
