@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+body{margin:0;background:#F5F8FA;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#176B87;text-decoration:none}
+a:hover{color:#123B52;text-decoration:underline}
+::selection{background:#E8F7F1}
+
+@keyframes snFadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.sn-fade{opacity:0;animation:snFadeUp .6s cubic-bezier(.2,.7,.3,1) forwards}
+.sn-fade-1{animation-delay:.05s}.sn-fade-2{animation-delay:.14s}.sn-fade-3{animation-delay:.22s}.sn-fade-4{animation-delay:.30s}
+
+.sn-card{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease}
+.sn-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(18,59,82,.10);border-color:#BFD9E0}
+
+.sn-kpi{transition:transform .18s ease, box-shadow .18s ease}
+.sn-kpi:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(18,59,82,.09)}
+
+.sn-btn{transition:transform .15s ease, box-shadow .15s ease, filter .15s ease}
+.sn-btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(23,107,135,.30)}
+.sn-btn:active{transform:translateY(0)}
+
+.sn-nav-item{transition:background .15s ease, color .15s ease, padding-left .15s ease}
+.sn-nav-item:hover{padding-left:16px}
+
+.sn-tile{transition:transform .2s cubic-bezier(.2,.7,.3,1), box-shadow .2s ease, filter .2s ease}
+.sn-tile:hover{transform:scale(1.06);box-shadow:0 10px 22px rgba(0,0,0,.20);filter:brightness(1.05)}
+
+.sn-row{transition:background-color .15s ease}
+.sn-row:hover{background-color:#F5F8FA}
+
+.sn-list-item{transition:transform .15s ease, background .15s ease, border-color .15s ease}
+.sn-list-item:hover{transform:translateX(3px)}
+</style>
+</helmet>
+
+<div style="background:#F5F8FA;min-height:100vh;color:#173042">
+
+<div style="position:sticky;top:0;z-index:50;background:#FFFFFF;border-bottom:1px solid #E3E9EC;padding:0 40px">
+  <div style="max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;height:60px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:28px;border-radius:8px;background:#FFFFFF;border:1px solid #E3E9EC;flex-shrink:0;overflow:hidden">
+        <img src="assets/logo-sannorberto.png" style="width:100%;height:100%;object-fit:cover">
+      </div>
+      <span style="font:700 14px 'Manrope';color:#123B52">San Norberto <span style="color:#2FAE82">Salud</span></span>
+    </div>
+    <div style="display:flex;gap:22px;font:500 13px 'Inter';color:#647784;overflow-x:auto">
+      <a href="#mision" style="color:#647784">Objetivo</a>
+      <a href="#como-funciona" style="color:#647784">Cómo funciona</a>
+      <a href="#que-incluye" style="color:#647784">Qué incluye</a>
+      <a href="#prototipo" style="color:#123B52;font-weight:700">Prototipo →</a>
+    </div>
+  </div>
+</div>
+
+<div style="position:relative;overflow:hidden;background:
+  radial-gradient(560px 320px at 88% -10%, rgba(47,174,130,.12), transparent 65%),
+  radial-gradient(520px 340px at 8% 0%, rgba(23,107,135,.12), transparent 60%),
+  repeating-linear-gradient(45deg, rgba(23,107,135,.05) 0 2px, transparent 2px 34px),
+  repeating-linear-gradient(-45deg, rgba(23,107,135,.05) 0 2px, transparent 2px 34px)
+  ">
+  <div style="max-width:1240px;margin:0 auto;padding:76px 40px 52px;position:relative;display:flex;align-items:center;gap:44px;flex-wrap:wrap">
+    <div style="flex:1;min-width:320px">
+      <div class="sn-fade" style="font:700 12px 'Inter';letter-spacing:.09em;text-transform:uppercase;color:#2FAE82;margin-bottom:16px">Plataforma privada de análisis sanitario</div>
+      <h1 class="sn-fade sn-fade-1" style="font:800 44px/1.16 'Manrope';color:#123B52;margin:0 0 20px;max-width:760px">Entendamos la salud de Melipilla, con datos.</h1>
+      <p class="sn-fade sn-fade-2" style="font:400 17px/1.65 'Inter';color:#647784;max-width:640px;margin:0 0 28px">San Norberto Salud reúne en un solo lugar las cifras de enfermedades, edades, sexo, clínicas y sectores de la comuna — para que cada decisión de salud se apoye en evidencia, no en suposiciones. Sin datos personales de pacientes.</p>
+      <div class="sn-fade sn-fade-3" style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="#prototipo" class="sn-btn" style="display:inline-flex;align-items:center;font:700 14px 'Inter';color:#FFFFFF;background:#176B87;padding:13px 22px;border-radius:8px">Ver el prototipo →</a>
+        <a href="#mision" class="sn-btn" style="display:inline-flex;align-items:center;font:700 14px 'Inter';color:#123B52;background:#FFFFFF;border:1px solid #D8E0E4;padding:13px 22px;border-radius:8px">Conocer el objetivo</a>
+      </div>
+    </div>
+    <div class="sn-fade sn-fade-2" style="flex:0 0 420px;max-width:100%;border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(18,59,82,.18)">
+      <img src="../melipilla-monumento.png" style="width:100%;height:360px;object-fit:cover;display:block">
+    </div>
+  </div>
+</div>
+
+<div id="mision" style="max-width:1240px;margin:0 auto;padding:8px 40px 56px">
+  <div style="font:700 11px 'Inter';letter-spacing:.08em;text-transform:uppercase;color:#2FAE82;margin-bottom:8px"><br></div>
+  <h2 style="font:700 26px 'Manrope';color:#123B52;margin:0 0 24px"><br></h2>
+  <div class="sn-card" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:26px;margin-bottom:16px">
+    <div style="font:700 13px 'Inter';color:#176B87;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Objetivo del sitio</div>
+    <p style="font:14.5px/1.7 'Inter';color:#173042;margin:0;max-width:900px">Plataforma web privada que centraliza, organiza y analiza la información estadística sobre enfermedades, padecimientos, rangos de edad, sexo o género, clínicas y sectores de la comuna de Melipilla, permitiendo generar indicadores, comparaciones y reportes que faciliten la planificación de servicios de salud, la identificación de oportunidades y la definición de acciones estratégicas por parte de San Norberto Salud.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:20px;align-items:stretch">
+    <div style="border-radius:12px;overflow:hidden;min-height:280px">
+      <img src="assets/melipilla-kiosco.png" style="width:100%;height:100%;object-fit:cover;display:block">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="sn-card" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:26px;flex:1">
+        <div style="font:700 13px 'Inter';color:#2FAE82;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Misión</div>
+        <p style="font:14.5px/1.7 'Inter';color:#173042;margin:0">Transformar datos sanitarios agregados de clínicas y sectores de la comuna de Melipilla en información confiable, clara y útil para apoyar la toma de decisiones de San Norberto Salud, optimizar la asignación de recursos y orientar servicios médicos que respondan de mejor manera a las necesidades de la población.</p>
+      </div>
+      <div class="sn-card" style="background:#123B52;border-radius:12px;padding:26px;flex:1">
+        <div style="font:700 13px 'Inter';color:#2FAE82;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Visión</div>
+        <p style="font:14.5px/1.7 'Inter';color:#E8F0F3;margin:0">Ser una plataforma referente en análisis e inteligencia sanitaria para la comuna de Melipilla, capaz de identificar tendencias, riesgos y necesidades de salud mediante información segura y basada en evidencia, contribuyendo a mejores estrategias, servicios médicos más oportunos y una mayor calidad de vida para la comunidad.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="como-funciona" style="max-width:1240px;margin:0 auto;padding:8px 40px 56px">
+  <div style="font:700 11px 'Inter';letter-spacing:.08em;text-transform:uppercase;color:#2FAE82;margin-bottom:8px">Cómo funciona</div>
+  <h2 style="font:700 26px 'Manrope';color:#123B52;margin:0 0 28px">De datos sueltos a decisiones informadas</h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+    <div class="sn-card sn-fade sn-fade-1" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:24px">
+      <div style="width:34px;height:34px;border-radius:50%;background:#E8F7F1;color:#2FAE82;display:flex;align-items:center;justify-content:center;font:700 15px 'Manrope';margin-bottom:14px">1</div>
+      <div style="font:700 14px 'Inter';color:#173042;margin-bottom:6px">Recopila</div>
+      <div style="font:13px/1.6 'Inter';color:#647784">Clínicas y sectores registran casos agregados, sin datos personales.</div>
+    </div>
+    <div class="sn-card sn-fade sn-fade-2" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:24px">
+      <div style="width:34px;height:34px;border-radius:50%;background:#E8F7F1;color:#2FAE82;display:flex;align-items:center;justify-content:center;font:700 15px 'Manrope';margin-bottom:14px">2</div>
+      <div style="font:700 14px 'Inter';color:#173042;margin-bottom:6px">Centraliza</div>
+      <div style="font:13px/1.6 'Inter';color:#647784">Toda la información queda en un mismo lugar, validada y sin duplicados.</div>
+    </div>
+    <div class="sn-card sn-fade sn-fade-3" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:24px">
+      <div style="width:34px;height:34px;border-radius:50%;background:#E8F7F1;color:#2FAE82;display:flex;align-items:center;justify-content:center;font:700 15px 'Manrope';margin-bottom:14px">3</div>
+      <div style="font:700 14px 'Inter';color:#173042;margin-bottom:6px">Analiza</div>
+      <div style="font:13px/1.6 'Inter';color:#647784">Calcula tasas por 100.000 habitantes y niveles de riesgo por sector.</div>
+    </div>
+    <div class="sn-card sn-fade sn-fade-4" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:24px">
+      <div style="width:34px;height:34px;border-radius:50%;background:#E8F7F1;color:#2FAE82;display:flex;align-items:center;justify-content:center;font:700 15px 'Manrope';margin-bottom:14px">4</div>
+      <div style="font:700 14px 'Inter';color:#173042;margin-bottom:6px">Decide</div>
+      <div style="font:13px/1.6 'Inter';color:#647784">Dashboards y mapas apoyan la planificación de servicios y recursos.</div>
+    </div>
+  </div>
+</div>
+
+<div id="que-incluye" style="max-width:1240px;margin:0 auto;padding:8px 40px 64px">
+  <div style="font:700 11px 'Inter';letter-spacing:.08em;text-transform:uppercase;color:#2FAE82;margin-bottom:8px">Qué incluye</div>
+  <h2 style="font:700 26px 'Manrope';color:#123B52;margin:0 0 28px">Todo lo que necesita el equipo de San Norberto</h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+    <div class="sn-card sn-fade sn-fade-1" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:24px">
+      <div style="width:36px;height:36px;border-radius:9px;background:#123B52;margin-bottom:14px"></div>
+      <div style="font:700 14px 'Inter';color:#173042;margin-bottom:6px">Dashboard con indicadores</div>
+      <div style="font:13px/1.6 'Inter';color:#647784">Casos, incidencia y variación mensual en un solo vistazo.</div>
+    </div>
+    <div class="sn-card sn-fade sn-fade-2" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:24px">
+      <div style="width:36px;height:36px;border-radius:50%;background:#176B87;margin-bottom:14px"></div>
+      <div style="font:700 14px 'Inter';color:#173042;margin-bottom:6px">Mapa de riesgo por sector</div>
+      <div style="font:13px/1.6 'Inter';color:#647784">Visualiza qué sectores concentran mayor riesgo sanitario.</div>
+    </div>
+    <div class="sn-card sn-fade sn-fade-3" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:24px">
+      <div style="width:36px;height:36px;border-radius:9px;background:#2FAE82;margin-bottom:14px"></div>
+      <div style="font:700 14px 'Inter';color:#173042;margin-bottom:6px">Comparaciones</div>
+      <div style="font:13px/1.6 'Inter';color:#647784">Entre clínicas y entre sectores, por enfermedad y período.</div>
+    </div>
+    <div class="sn-card sn-fade sn-fade-4" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:12px;padding:24px">
+      <div style="width:36px;height:36px;border-radius:9px;background:#E5B73B;margin-bottom:14px"></div>
+      <div style="font:700 14px 'Inter';color:#173042;margin-bottom:6px">Reportes exportables</div>
+      <div style="font:13px/1.6 'Inter';color:#647784">PDF y Excel con filtros, gráficos y fuentes incluidas.</div>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="prototipo" style="background:#123B52;padding:64px 40px">
+  <div style="max-width:1240px;margin:0 auto">
+    <div style="font:700 11px 'Inter';letter-spacing:.08em;text-transform:uppercase;color:#2FAE82;margin-bottom:8px">07 — Prototipo interactivo</div>
+    <h2 style="font:700 26px 'Manrope';color:#FFFFFF;margin:0 0 10px">Inicio de sesión → Dashboard → Sectores y mapa</h2>
+    <p style="font:14px/1.6 'Inter';color:#9FC6D6;margin:0 0 32px;max-width:600px">Inicia sesión, prueba los filtros del dashboard y haz clic en el mapa esquemático de sectores.</p>
+    <div style="display:flex;justify-content:center">
+      <x-import component-from-global-scope="ChromeWindow" from="./browser-window.jsx" width="{{ chromeWidth }}" height="{{ chromeHeight }}" url="app.sannorbertosalud.cl" hint-size="1160px,780px">
+
+        <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;height:100%;min-height:700px;font-family:'Inter',sans-serif">
+          <div style="flex:0 0 42%;background:#123B52;color:#FFFFFF;padding:48px 40px;display:flex;flex-direction:column;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:32px;height:32px;border-radius:9px;overflow:hidden;flex-shrink:0">
+                <img src="assets/logo-sannorberto.png" style="width:100%;height:100%;object-fit:cover">
+              </div>
+              <span style="font:700 15px 'Manrope'">San Norberto <span style="color:#2FAE82">Salud</span></span>
+            </div>
+            <div>
+              <h2 style="font:700 24px/1.3 'Manrope';margin:0 0 14px">Estadística sanitaria, sin fricción.</h2>
+              <div style="display:flex;flex-direction:column;gap:10px;font:13.5px/1.5 'Inter';color:#CFE3EC">
+                <div>✓ Solo información agregada — nunca datos personales</div>
+                <div>✓ Acceso exclusivo del equipo y las clínicas</div>
+                <div>✓ Trazabilidad de fuentes en cada cifra</div>
+              </div>
+            </div>
+            <div style="font:12px 'Inter';color:#9FC6D6">Comuna de Melipilla · Región Metropolitana</div>
+          </div>
+          <div style="flex:1;background:#FFFFFF;display:flex;align-items:center;justify-content:center;padding:40px">
+            <form onSubmit="{{ doLogin }}" style="width:100%;max-width:340px;display:flex;flex-direction:column;gap:16px">
+              <div>
+                <h2 style="font:700 22px 'Manrope';color:#123B52;margin:0 0 6px">Iniciar sesión</h2>
+                <p style="font:13px/1.5 'Inter';color:#647784;margin:0">Cuenta institucional. Sin registro público.</p>
+              </div>
+              <label style="font:600 12.5px 'Inter';color:#173042;display:flex;flex-direction:column;gap:6px">Correo institucional
+                <input type="email" placeholder="nombre@sannorbertosalud.cl" required="" style="font:14px 'Inter';padding:11px 12px;border:1px solid #D8E0E4;border-radius:8px;outline:none">
+              </label>
+              <label style="font:600 12.5px 'Inter';color:#173042;display:flex;flex-direction:column;gap:6px">Contraseña
+                <input type="password" placeholder="••••••••" required="" style="font:14px 'Inter';padding:11px 12px;border:1px solid #D8E0E4;border-radius:8px;outline:none">
+              </label>
+              <a href="#" style="font:12.5px 'Inter';color:#176B87;align-self:flex-end">¿Olvidaste tu contraseña?</a>
+              <button type="submit" class="sn-btn" style="font:700 14px 'Inter';color:#FFFFFF;background:#176B87;border:none;border-radius:8px;padding:13px;cursor:pointer">Iniciar sesión</button>
+              <p style="font:11.5px/1.5 'Inter';color:#647784;margin:4px 0 0;text-align:center">Acceso exclusivo — las cuentas son creadas por el administrador.</p>
+            </form>
+          </div>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;height:100%;min-height:700px;font-family:'Inter',sans-serif">
+          <div style="flex:0 0 232px;background:#123B52;padding:20px 14px;display:flex;flex-direction:column;gap:2px">
+            <div style="display:flex;align-items:center;gap:9px;padding:6px 8px 20px">
+              <div style="width:24px;height:24px;border-radius:7px;overflow:hidden;flex-shrink:0">
+                <img src="assets/logo-sannorberto.png" style="width:100%;height:100%;object-fit:cover">
+              </div>
+              <span style="font:700 13px 'Manrope';color:#FFFFFF">San Norberto Salud</span>
+            </div>
+            <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="12">
+              <div onClick="{{ item.go }}" class="sn-nav-item" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font:13.5px 'Inter';cursor:pointer;background:{{ item.navBg }};color:{{ item.navColor }};opacity:{{ item.navOpacity }}">
+                <div style="width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0"></div>
+                {{ item.label }}
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="flex:1;background:#F5F8FA;display:flex;flex-direction:column;min-width:0">
+            <div style="height:60px;flex-shrink:0;background:#FFFFFF;border-bottom:1px solid #E3E9EC;display:flex;align-items:center;justify-content:space-between;padding:0 28px">
+              <div style="font:700 16px 'Manrope';color:#123B52">{{ screenTitle }}</div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="font:600 11px 'Inter';color:#176B87;background:#E8F7F1;padding:5px 10px;border-radius:99px">Todas las clínicas</span>
+                <span style="font:600 11px 'Inter';color:#647784;background:#F5F8FA;padding:5px 10px;border-radius:99px">Administrador general</span>
+                <button onClick="{{ logout }}" class="sn-btn" style="font:600 12px 'Inter';color:#647784;background:none;border:1px solid #D8E0E4;border-radius:7px;padding:7px 12px;cursor:pointer">Cerrar sesión</button>
+              </div>
+            </div>
+
+            <div style="flex:1;overflow:auto;padding:26px 28px">
+
+              <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <div style="position:relative;height:150px;border-radius:12px;overflow:hidden;margin-bottom:18px;background-image:url('assets/melipilla-plaza.png');background-size:cover;background-position:center">
+                  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,59,82,.9) 0%,rgba(18,59,82,.55) 50%,rgba(18,59,82,.08) 100%)"></div>
+                  <div style="position:relative;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 26px">
+                    <div>
+                      <div style="font:700 19px 'Manrope';color:#FFFFFF;margin-bottom:5px">Comuna de Melipilla</div>
+                      <div style="font:12.5px 'Inter';color:#CFE3EC">Sociedad de Servicios Sociales y de Salud San Norberto Ltda. · Región Metropolitana</div>
+                    </div>
+                    <div style="width:44px;height:44px;border-radius:11px;background:#FFFFFF;padding:4px;box-sizing:border-box;flex-shrink:0">
+                      <img src="assets/logo-sannorberto.png" style="width:100%;height:100%;object-fit:cover;border-radius:7px">
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px">
+                  <select onChange="{{ setPeriodo }}" style="font:13px 'Inter';padding:8px 10px;border:1px solid #D8E0E4;border-radius:7px;background:#FFFFFF;color:#173042">
+                    <sc-for list="{{ periodoOptions }}" as="opt" hint-placeholder-count="2">
+                      <option value="{{ opt.value }}">{{ opt.label }}</option>
+                    </sc-for>
+                  </select>
+                  <select onChange="{{ setSectorFiltro }}" style="font:13px 'Inter';padding:8px 10px;border:1px solid #D8E0E4;border-radius:7px;background:#FFFFFF;color:#173042">
+                    <sc-for list="{{ sectorOptions }}" as="opt" hint-placeholder-count="9">
+                      <option value="{{ opt.value }}">{{ opt.label }}</option>
+                    </sc-for>
+                  </select>
+                  <select onChange="{{ setEnfermedadFiltro }}" style="font:13px 'Inter';padding:8px 10px;border:1px solid #D8E0E4;border-radius:7px;background:#FFFFFF;color:#173042">
+                    <sc-for list="{{ enfermedadOptions }}" as="opt" hint-placeholder-count="7">
+                      <option value="{{ opt.value }}">{{ opt.label }}</option>
+                    </sc-for>
+                  </select>
+                  <span style="font:11.5px 'Inter';color:#647784;background:#FFFFFF;border:1px solid #E3E9EC;padding:6px 10px;border-radius:99px">Clínica: Todas</span>
+                  <span style="font:11.5px 'Inter';color:#647784;background:#FFFFFF;border:1px solid #E3E9EC;padding:6px 10px;border-radius:99px">Sexo: Todos</span>
+                  <span style="font:11.5px 'Inter';color:#647784;background:#FFFFFF;border:1px solid #E3E9EC;padding:6px 10px;border-radius:99px">Estado: Aprobados</span>
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px">
+                  <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="9">
+                    <div class="sn-kpi" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:10px;padding:16px">
+                      <div style="font:600 11px 'Inter';color:#647784;margin-bottom:8px">{{ k.label }}</div>
+                      <div style="font:700 19px 'Manrope';color:#123B52;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ k.value }}</div>
+                      <div style="font:11px 'Inter';color:#647784">{{ k.sub }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:18px">
+                  <div class="sn-card" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:10px;padding:20px">
+                    <div style="font:700 13px 'Inter';color:#173042;margin-bottom:14px">Casos por enfermedad — {{ periodo }}</div>
+                    <div style="height:216px;position:relative">
+                      <canvas id="chartEnfermedades"></canvas>
+                    </div>
+                    <sc-if value="{{ hasEnfermedadInfo }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:10px;font:12px 'Inter';color:#123B52;background:#E8F7F1;padding:9px 12px;border-radius:7px">{{ enfermedadInfo }}</div>
+                    </sc-if>
+                  </div>
+                  <div class="sn-card" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:10px;padding:20px">
+                    <div style="font:700 13px 'Inter';color:#173042;margin-bottom:14px">Distribución por sexo o género</div>
+                    <div style="height:140px;position:relative;margin-bottom:16px">
+                      <canvas id="chartSexo"></canvas>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:7px;font:12px 'Inter';color:#173042">
+                      <div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:#176B87;flex-shrink:0"></span>Femenino — 54%</div>
+                      <div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:#2FAE82;flex-shrink:0"></span>Masculino — 44%</div>
+                      <div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:#E5B73B;flex-shrink:0"></span>Otro — 1%</div>
+                      <div style="display:flex;align-items:center;gap:8px"><span style="width:9px;height:9px;border-radius:50%;background:#647784;flex-shrink:0"></span>No informado — 1%</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sn-card" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:10px;padding:20px">
+                  <div style="font:700 13px 'Inter';color:#173042;margin-bottom:4px">Ranking de sectores por tasa de riesgo</div>
+                  <sc-if value="{{ hasSectorFiltroInfo }}" hint-placeholder-val="{{ false }}">
+                    <div style="font:12px 'Inter';color:#123B52;margin-bottom:10px">{{ sectorFiltroInfo }}</div>
+                  </sc-if>
+                  <div style="display:grid;grid-template-columns:1.4fr .8fr 1fr .7fr .9fr .9fr;gap:8px;padding:8px 0;border-bottom:1px solid #E3E9EC;font:600 11px 'Inter';color:#647784;text-transform:uppercase;letter-spacing:.03em">
+                    <div>Sector</div><div>Tipo</div><div>Población</div><div>Casos</div><div>Tasa /100k</div><div>Riesgo</div>
+                  </div>
+                  <sc-for list="{{ sectoresRanking }}" as="r" hint-placeholder-count="8">
+                    <div class="sn-row" style="display:grid;grid-template-columns:1.4fr .8fr 1fr .7fr .9fr .9fr;gap:8px;padding:10px 0;border-bottom:1px solid #F0F3F4;font:13px 'Inter';color:#173042;align-items:center;background:{{ r.rowBg }}">
+                      <div style="font-weight:600">{{ r.name }}</div>
+                      <div style="color:#647784">{{ r.tipo }}</div>
+                      <div style="color:#647784">{{ r.poblacionFmt }}</div>
+                      <div>{{ r.casosPrincipal }}</div>
+                      <div>{{ r.tasa }}</div>
+                      <div><span style="font:600 10.5px 'Inter';color:#FFFFFF;background:{{ r.riesgoColor }};padding:3px 9px;border-radius:99px">{{ r.riesgoLabel }}</span></div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+              </sc-if>
+
+              <sc-if value="{{ isSectores }}" hint-placeholder-val="{{ false }}">
+              <div>
+                <p style="font:12.5px/1.5 'Inter';color:#647784;margin:0 0 16px;max-width:560px">Mapa esquemático por sector (no georreferenciado con precisión) — preparado para integrar polígonos GeoJSON.</p>
+                <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start;margin-bottom:16px">
+                  <div style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:10px;padding:16px">
+                    <input value="{{ sectorSearch }}" onChange="{{ setSectorSearch }}" placeholder="Buscar sector…" style="width:100%;box-sizing:border-box;font:13px 'Inter';padding:9px 11px;border:1px solid #D8E0E4;border-radius:7px;margin-bottom:12px;outline:none">
+                    <div style="display:flex;flex-direction:column;gap:6px;max-height:480px;overflow:auto">
+                      <sc-for list="{{ sectoresLista }}" as="s" hint-placeholder-count="8">
+                        <div onClick="{{ s.select }}" class="sn-list-item" style="cursor:pointer;padding:10px 11px;border-radius:8px;background:{{ s.listBg }};border:1px solid {{ s.listBorder }}">
+                          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
+                            <span style="font:600 13px 'Inter';color:#173042">{{ s.name }}</span>
+                            <span style="width:8px;height:8px;border-radius:50%;background:{{ s.riesgoColor }};flex-shrink:0"></span>
+                          </div>
+                          <div style="font:11px 'Inter';color:#647784">{{ s.tipo }} · {{ s.poblacionFmt }} hab. · riesgo {{ s.riesgoLabel }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:10px;padding:20px">
+                    <div style="display:flex;flex-wrap:wrap;gap:14px;align-content:flex-start;min-height:340px">
+                      <sc-for list="{{ sectoresMapa }}" as="m" hint-placeholder-count="8">
+                        <div onClick="{{ m.select }}" title="{{ m.tooltip }}" class="sn-tile" style="cursor:pointer;width:{{ m.mapSize }}px;height:{{ m.mapSize }}px;border-radius:14px;background:{{ m.riesgoColor }};display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;outline:{{ m.mapOutline }}">
+                          <span style="font:700 12px 'Inter';color:#FFFFFF;text-shadow:0 1px 2px rgba(0,0,0,.25)">{{ m.name }}</span>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="display:flex;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid #F0F3F4;font:12px 'Inter';color:#173042">
+                      <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#2E9D68"></span>Bajo</div>
+                      <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#E5B73B"></span>Medio</div>
+                      <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#E98132"></span>Alto</div>
+                      <div style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#D84A4A"></span>Extremo</div>
+                    </div>
+                  </div>
+                </div>
+
+                <sc-if value="{{ hasSelectedSector }}" hint-placeholder-val="{{ false }}">
+                  <div class="sn-card sn-fade" style="background:#FFFFFF;border:1px solid #E3E9EC;border-radius:10px;padding:20px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap">
+                    <div>
+                      <div style="font:700 15px 'Manrope';color:#123B52;margin-bottom:6px">{{ sectorSeleccionado.name }}</div>
+                      <div style="font:13px 'Inter';color:#647784;margin-bottom:2px">{{ sectorSeleccionado.tipo }} · {{ sectorSeleccionado.poblacionFmt }} habitantes</div>
+                      <div style="font:13px 'Inter';color:#647784">Enfermedad principal: {{ sectorSeleccionado.enfermedadPrincipal }} ({{ sectorSeleccionado.casosPrincipal }} casos)</div>
+                    </div>
+                    <div style="text-align:right">
+                      <div style="font:11px 'Inter';color:#647784;margin-bottom:4px">Tasa por 100.000 hab.</div>
+                      <div style="font:700 22px 'Manrope';color:#123B52;margin-bottom:8px">{{ sectorSeleccionado.tasa }}</div>
+                      <span style="font:600 11px 'Inter';color:#FFFFFF;background:{{ sectorSeleccionado.riesgoColor }};padding:4px 11px;border-radius:99px">Riesgo {{ sectorSeleccionado.riesgoLabel }}</span>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ hasSelectedSector }}" hint-placeholder-val="{{ true }}">
+                </sc-if>
+              </div>
+              </sc-if>
+
+            </div>
+          </div>
+        </div>
+        </sc-if>
+      </x-import>
+    </div>
+    <p style="font:12px 'Inter';color:#7FA6B4;margin:18px 0 0;text-align:center">No hay selector de rol en este paso — el prototipo abre siempre como Administrador general.</p>
+  </div>
+</div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    loggedIn: false,
+    appView: 'dashboard',
+    periodo: 'Junio 2026',
+    enfermedadFiltro: 'todas',
+    sectorFiltro: 'todos',
+    selectedSectorId: null,
+    sectorSearch: '',
+  };
+
+  sectoresBase = [
+    { id: 'centro', name: 'Centro Melipilla', tipo: 'Urbano', poblacion: 31200, enfermedadPrincipal: 'Hipertensión arterial', casosPrincipal: 28 },
+    { id: 'hospital', name: 'Sector Hospital', tipo: 'Urbano', poblacion: 18700, enfermedadPrincipal: 'Infecciones respiratorias agudas', casosPrincipal: 39 },
+    { id: 'elprado', name: 'El Prado', tipo: 'Urbano', poblacion: 12400, enfermedadPrincipal: 'Obesidad', casosPrincipal: 2 },
+    { id: 'lasmercedes', name: 'Las Mercedes', tipo: 'Urbano', poblacion: 9600, enfermedadPrincipal: 'Diabetes tipo 2', casosPrincipal: 3 },
+    { id: 'sanmanuel', name: 'San Manuel', tipo: 'Rural', poblacion: 6100, enfermedadPrincipal: 'Hipertensión arterial', casosPrincipal: 2 },
+    { id: 'ruralnorte', name: 'Rural Norte', tipo: 'Rural', poblacion: 5200, enfermedadPrincipal: 'Depresión', casosPrincipal: 4 },
+    { id: 'ruralsur', name: 'Rural Sur', tipo: 'Rural', poblacion: 4800, enfermedadPrincipal: 'Enfermedad renal crónica', casosPrincipal: 1 },
+    { id: 'pomaire', name: 'Pomaire', tipo: 'Rural', poblacion: 4300, enfermedadPrincipal: 'Diabetes tipo 2', casosPrincipal: 2 },
+  ];
+
+  periodos = {
+    'Junio 2026': { enfermedades: { 'Hipertensión arterial': 145, 'Diabetes tipo 2': 98, 'Infecciones respiratorias agudas': 176, 'Obesidad': 62, 'Depresión': 54, 'Enfermedad renal crónica': 31 }, variacion: '+6.4%', pendientes: 5 },
+    'Mayo 2026': { enfermedades: { 'Hipertensión arterial': 138, 'Diabetes tipo 2': 92, 'Infecciones respiratorias agudas': 150, 'Obesidad': 58, 'Depresión': 61, 'Enfermedad renal crónica': 33 }, variacion: '+2.1%', pendientes: 3 },
+  };
+
+  riesgoInfo = {
+    bajo: { label: 'Bajo', color: '#2E9D68' },
+    medio: { label: 'Medio', color: '#E5B73B' },
+    alto: { label: 'Alto', color: '#E98132' },
+    extremo: { label: 'Extremo', color: '#D84A4A' },
+  };
+
+  palette = [
+    { hex: '#176B87', name: 'Azul principal' },
+    { hex: '#123B52', name: 'Azul oscuro' },
+    { hex: '#2FAE82', name: 'Verde salud' },
+    { hex: '#E8F7F1', name: 'Verde claro' },
+    { hex: '#F5F8FA', name: 'Fondo general' },
+    { hex: '#173042', name: 'Texto principal' },
+    { hex: '#647784', name: 'Texto secundario' },
+    { hex: '#2E9D68', name: 'Riesgo bajo' },
+    { hex: '#E5B73B', name: 'Riesgo medio' },
+    { hex: '#E98132', name: 'Riesgo alto' },
+    { hex: '#D84A4A', name: 'Riesgo extremo' },
+  ];
+
+  navDefs = [
+    { label: 'Dashboard', view: 'dashboard', enabled: true },
+    { label: 'Clínicas', view: 'clinicas', enabled: false },
+    { label: 'Sectores', view: 'sectores', enabled: true },
+    { label: 'Población', view: 'poblacion', enabled: false },
+    { label: 'Enfermedades', view: 'enfermedades', enabled: false },
+    { label: 'Registros', view: 'registros', enabled: false },
+    { label: 'Comparaciones', view: 'comparaciones', enabled: false },
+    { label: 'Reportes', view: 'reportes', enabled: false },
+    { label: 'Investigación IA', view: 'ia', enabled: false },
+    { label: 'Aprobaciones', view: 'aprobaciones', enabled: false },
+    { label: 'Usuarios', view: 'usuarios', enabled: false },
+    { label: 'Configuración', view: 'config', enabled: false },
+  ];
+
+  classifyRiesgo(tasa) {
+    if (tasa < 25) return 'bajo';
+    if (tasa <= 50) return 'medio';
+    if (tasa <= 150) return 'alto';
+    return 'extremo';
+  }
+
+  navigate(view) { this.setState({ appView: view }); }
+  doLogin(e) { e.preventDefault(); this.setState({ loggedIn: true, appView: 'dashboard' }); }
+  logout() { this.setState({ loggedIn: false, selectedSectorId: null }); }
+  selectSector(id) { this.setState(s => ({ selectedSectorId: s.selectedSectorId === id ? null : id })); }
+
+  componentDidMount() { this.renderCharts(); }
+  componentDidUpdate() { this.renderCharts(); }
+
+  renderCharts() {
+    if (typeof Chart === 'undefined') return;
+    const s = this.state;
+    const periodoData = this.periodos[s.periodo];
+
+    const canvasEnf = document.getElementById('chartEnfermedades');
+    if (canvasEnf) {
+      const labels = Object.keys(periodoData.enfermedades);
+      const data = Object.values(periodoData.enfermedades);
+      const bg = labels.map(l => (s.enfermedadFiltro === 'todas' || s.enfermedadFiltro === l) ? '#176B87' : 'rgba(23,107,135,.25)');
+      if (this._chartEnf && this._chartEnf.canvas === canvasEnf) {
+        this._chartEnf.data.labels = labels;
+        this._chartEnf.data.datasets[0].data = data;
+        this._chartEnf.data.datasets[0].backgroundColor = bg;
+        this._chartEnf.update();
+      } else {
+        if (this._chartEnf) this._chartEnf.destroy();
+        this._chartEnf = new Chart(canvasEnf, {
+          type: 'bar',
+          data: { labels, datasets: [{ data, backgroundColor: bg, borderRadius: 6, maxBarThickness: 22 }] },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 450, easing: 'easeOutQuart' },
+            plugins: {
+              legend: { display: false },
+              tooltip: { backgroundColor: '#123B52', padding: 10, cornerRadius: 8, displayColors: false, titleFont: { family: 'Inter' }, bodyFont: { family: 'Inter' } }
+            },
+            scales: {
+              x: { beginAtZero: true, grid: { color: '#F0F3F4' }, ticks: { font: { family: 'Inter', size: 11 }, color: '#647784' } },
+              y: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 12 }, color: '#173042' } }
+            }
+          }
+        });
+      }
+    } else if (this._chartEnf) {
+      this._chartEnf.destroy(); this._chartEnf = null;
+    }
+
+    const canvasSexo = document.getElementById('chartSexo');
+    if (canvasSexo) {
+      if (!(this._chartSexo && this._chartSexo.canvas === canvasSexo)) {
+        if (this._chartSexo) this._chartSexo.destroy();
+        this._chartSexo = new Chart(canvasSexo, {
+          type: 'doughnut',
+          data: {
+            labels: ['Femenino', 'Masculino', 'Otro', 'No informado'],
+            datasets: [{ data: [54, 44, 1, 1], backgroundColor: ['#176B87', '#2FAE82', '#E5B73B', '#647784'], borderWidth: 0, hoverOffset: 8 }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '68%',
+            animation: { duration: 450, easing: 'easeOutQuart' },
+            plugins: {
+              legend: { display: false },
+              tooltip: { backgroundColor: '#123B52', padding: 10, cornerRadius: 8, titleFont: { family: 'Inter' }, bodyFont: { family: 'Inter' } }
+            }
+          }
+        });
+      }
+    } else if (this._chartSexo) {
+      this._chartSexo.destroy(); this._chartSexo = null;
+    }
+  }
+
+  renderVals() {
+    const s = this.state;
+    const comunaPoblacion = this.sectoresBase.reduce((a, x) => a + x.poblacion, 0);
+
+    const sectoresCalc = this.sectoresBase.map(x => {
+      const tasa = (x.casosPrincipal / x.poblacion) * 100000;
+      const riesgo = this.classifyRiesgo(tasa);
+      const info = this.riesgoInfo[riesgo];
+      const mapSize = x.poblacion > 20000 ? 150 : x.poblacion > 8000 ? 120 : 90;
+      const isSelected = s.selectedSectorId === x.id;
+      return {
+        ...x,
+        poblacionFmt: x.poblacion.toLocaleString('es-CL'),
+        tasa: tasa.toFixed(1),
+        riesgo, riesgoLabel: info.label, riesgoColor: info.color,
+        mapSize,
+        tooltip: x.name + ' — riesgo ' + info.label,
+        isSelected,
+        isFiltroActive: s.sectorFiltro === x.id,
+        mapOutline: isSelected ? '3px solid #123B52' : 'none',
+        listBg: isSelected ? '#E8F7F1' : '#FFFFFF',
+        listBorder: isSelected ? '#2FAE82' : '#E3E9EC',
+        select: () => this.selectSector(x.id),
+      };
+    });
+
+    const sectoresRankingBase = [...sectoresCalc].sort((a, b) => parseFloat(b.tasa) - parseFloat(a.tasa));
+    const sectoresRanking = sectoresRankingBase.map(x => ({ ...x, rowBg: x.isFiltroActive ? '#E8F7F1' : 'transparent' }));
+    const topRiesgoSector = sectoresRankingBase[0];
+    const sectoresLista = sectoresCalc
+      .filter(x => x.name.toLowerCase().includes(s.sectorSearch.toLowerCase()))
+      .sort((a, b) => parseFloat(b.tasa) - parseFloat(a.tasa));
+
+    const periodoData = this.periodos[s.periodo];
+    const maxEnf = Math.max(...Object.values(periodoData.enfermedades));
+    const enfermedadChart = Object.entries(periodoData.enfermedades).map(([nombre, valor]) => {
+      const isActive = s.enfermedadFiltro === 'todas' || s.enfermedadFiltro === nombre;
+      return { nombre, valor, pct: Math.round((valor / maxEnf) * 100), rowOpacity: isActive ? 1 : 0.35 };
+    });
+    const topEnfermedad = enfermedadChart.reduce((a, b) => (b.valor > a.valor ? b : a));
+    const totalCasos = Object.values(periodoData.enfermedades).reduce((a, b) => a + b, 0);
+
+    let enfermedadInfo = null;
+    if (s.enfermedadFiltro !== 'todas') {
+      const casos = periodoData.enfermedades[s.enfermedadFiltro];
+      const tasa = (casos / comunaPoblacion) * 100000;
+      enfermedadInfo = s.enfermedadFiltro + ': ' + casos + ' casos · tasa ' + tasa.toFixed(1) + ' por 100.000 hab.';
+    }
+
+    let sectorFiltroInfo = null;
+    if (s.sectorFiltro !== 'todos') {
+      const sec = sectoresCalc.find(x => x.id === s.sectorFiltro);
+      if (sec) sectorFiltroInfo = sec.name + ': ' + sec.casosPrincipal + ' casos de ' + sec.enfermedadPrincipal + ' · tasa ' + sec.tasa + ' · riesgo ' + sec.riesgoLabel;
+    }
+
+    const sectorSeleccionado = sectoresCalc.find(x => x.id === s.selectedSectorId) || null;
+
+    const enfermedadOptions = [{ value: 'todas', label: 'Todas las enfermedades' }, ...Object.keys(periodoData.enfermedades).map(n => ({ value: n, label: n }))];
+    const sectorOptions = [{ value: 'todos', label: 'Todos los sectores' }, ...this.sectoresBase.map(x => ({ value: x.id, label: x.name }))];
+    const periodoOptions = Object.keys(this.periodos).map(p => ({ value: p, label: p }));
+
+    const kpis = [
+      { label: 'Total de casos', value: String(totalCasos), sub: s.periodo },
+      { label: 'Clínicas activas', value: '6', sub: '6 centros de salud' },
+      { label: 'Sectores', value: '8', sub: 'Comuna de Melipilla' },
+      { label: 'Enfermedades registradas', value: '6', sub: 'catálogo activo' },
+      { label: 'Mayor incidencia', value: topEnfermedad.nombre, sub: topEnfermedad.valor + ' casos' },
+      { label: 'Sector de mayor riesgo', value: topRiesgoSector.name, sub: 'Riesgo ' + topRiesgoSector.riesgoLabel },
+      { label: 'Rango de edad más afectado', value: 'Adultez media (26–59)', sub: '41% de los casos' },
+      { label: 'Variación vs. mes anterior', value: periodoData.variacion, sub: 'vs. período previo' },
+      { label: 'Pendientes de aprobación', value: String(periodoData.pendientes), sub: 'registros por revisar' },
+    ];
+
+    const navItems = this.navDefs.map(x => {
+      const isActive = x.view === s.appView;
+      return {
+        ...x,
+        navBg: isActive ? 'rgba(255,255,255,0.12)' : 'transparent',
+        navColor: isActive ? '#FFFFFF' : x.enabled ? '#CFE3EC' : '#5D7E8E',
+        navOpacity: x.enabled ? 1 : 0.55,
+        go: x.enabled ? () => this.navigate(x.view) : null,
+      };
+    });
+
+    return {
+      loggedIn: s.loggedIn,
+      isLogin: !s.loggedIn,
+      isDashboard: s.loggedIn && s.appView === 'dashboard',
+      isSectores: s.loggedIn && s.appView === 'sectores',
+      screenTitle: s.appView === 'sectores' ? 'Sectores y mapa de Melipilla' : 'Dashboard central',
+      doLogin: (e) => this.doLogin(e),
+      logout: () => this.logout(),
+      navItems,
+      kpis,
+      enfermedadChart,
+      enfermedadInfo,
+      hasEnfermedadInfo: !!enfermedadInfo,
+      sectorFiltroInfo,
+      hasSectorFiltroInfo: !!sectorFiltroInfo,
+      periodoOptions, enfermedadOptions, sectorOptions,
+      periodo: s.periodo,
+      setPeriodo: (e) => this.setState({ periodo: e.target.value }),
+      setEnfermedadFiltro: (e) => this.setState({ enfermedadFiltro: e.target.value }),
+      setSectorFiltro: (e) => this.setState({ sectorFiltro: e.target.value }),
+      sectoresMapa: sectoresCalc,
+      sectoresRanking,
+      sectoresLista,
+      sectorSearch: s.sectorSearch,
+      setSectorSearch: (e) => this.setState({ sectorSearch: e.target.value }),
+      hasSelectedSector: !!sectorSeleccionado,
+      sectorSeleccionado,
+      chromeWidth: 1160,
+      chromeHeight: 800,
+      palette: this.palette,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

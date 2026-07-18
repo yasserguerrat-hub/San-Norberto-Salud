@@ -1,0 +1,21 @@
+export const ROUTES = {
+  home: '/',
+  login: '/login',
+  forgotPassword: '/recuperar-contrasena',
+  forbidden: '/sin-permisos',
+  app: {
+    root: '/app',
+    dashboard: '/app/dashboard',
+    clinics: '/app/clinicas',
+    sectors: '/app/sectores',
+    population: '/app/poblacion',
+    diseases: '/app/enfermedades',
+    healthRecords: '/app/registros',
+    comparisons: '/app/comparaciones',
+    reports: '/app/reportes',
+    aiResearch: '/app/investigacion-ia',
+    approvals: '/app/aprobaciones',
+    users: '/app/usuarios',
+    settings: '/app/configuracion',
+  },
+} as const

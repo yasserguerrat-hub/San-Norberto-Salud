@@ -1,0 +1,211 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Tokens de diseño — San Norberto Salud.
+  Fuente de verdad visual: "Prototipo integración arquitectura web/San Norberto Salud.dc.html"
+  No hardcodear estos hex en componentes: usar siempre las clases semánticas de Tailwind
+  (bg-primary, text-risk-high, font-heading, etc.).
+*/
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-risk-low: var(--risk-low);
+  --color-risk-low-foreground: var(--risk-low-foreground);
+  --color-risk-medium: var(--risk-medium);
+  --color-risk-medium-foreground: var(--risk-medium-foreground);
+  --color-risk-high: var(--risk-high);
+  --color-risk-high-foreground: var(--risk-high-foreground);
+  --color-risk-extreme: var(--risk-extreme);
+  --color-risk-extreme-foreground: var(--risk-extreme-foreground);
+
+  --color-status-pending: var(--status-pending);
+  --color-status-approved: var(--status-approved);
+  --color-status-rejected: var(--status-rejected);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+
+  --shadow-elevate: 0 12px 28px rgb(18 59 82 / 0.10);
+  --shadow-elevate-sm: 0 10px 22px rgb(18 59 82 / 0.09);
+}
+
+:root {
+  --background: #F5F8FA;
+  --foreground: #173042;
+
+  --card: #FFFFFF;
+  --card-foreground: #173042;
+  --popover: #FFFFFF;
+  --popover-foreground: #173042;
+
+  --primary: #176B87;
+  --primary-foreground: #FFFFFF;
+  --primary-dark: #123B52;
+
+  --secondary: #2FAE82;
+  --secondary-foreground: #FFFFFF;
+
+  --muted: #EEF3F5;
+  --muted-foreground: #647784;
+
+  --accent: #E8F7F1;
+  --accent-foreground: #123B52;
+
+  --destructive: #D84A4A;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #E3E9EC;
+  --input: #D8E0E4;
+  --ring: #176B87;
+
+  /* Niveles de riesgo — siempre acompañados de ícono + etiqueta, nunca solo color (RNF-13) */
+  --risk-low: #2E9D68;
+  --risk-low-foreground: #FFFFFF;
+  --risk-medium: #E5B73B;
+  --risk-medium-foreground: #173042;
+  --risk-high: #E98132;
+  --risk-high-foreground: #FFFFFF;
+  --risk-extreme: #D84A4A;
+  --risk-extreme-foreground: #FFFFFF;
+
+  /* Estados de registros (RF-11, RF-12) */
+  --status-pending: #E5B73B;
+  --status-approved: #2FAE82;
+  --status-rejected: #D84A4A;
+
+  /* Paleta de series para gráficos (Recharts consume estos valores en JS, ver lib/chart-colors.ts) */
+  --chart-1: #176B87;
+  --chart-2: #2FAE82;
+  --chart-3: #E5B73B;
+  --chart-4: #E98132;
+  --chart-5: #647784;
+
+  --radius: 0.625rem;
+
+  --sidebar: #123B52;
+  --sidebar-foreground: #CFE3EC;
+  --sidebar-primary: #FFFFFF;
+  --sidebar-primary-foreground: #123B52;
+  --sidebar-accent: rgb(255 255 255 / 0.12);
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: rgb(255 255 255 / 0.08);
+  --sidebar-ring: #2FAE82;
+}
+
+.dark {
+  --background: #0F2230;
+  --foreground: #E8F0F3;
+
+  --card: #123B52;
+  --card-foreground: #E8F0F3;
+  --popover: #123B52;
+  --popover-foreground: #E8F0F3;
+
+  --primary: #3FA6C9;
+  --primary-foreground: #0F2230;
+  --primary-dark: #0B1E29;
+
+  --secondary: #2FAE82;
+  --secondary-foreground: #0F2230;
+
+  --muted: #17384A;
+  --muted-foreground: #9FC6D6;
+
+  --accent: #17384A;
+  --accent-foreground: #E8F0F3;
+
+  --destructive: #E06565;
+  --destructive-foreground: #0F2230;
+
+  --border: rgb(255 255 255 / 0.12);
+  --input: rgb(255 255 255 / 0.16);
+  --ring: #3FA6C9;
+
+  --risk-low: #38B27A;
+  --risk-low-foreground: #0F2230;
+  --risk-medium: #E5B73B;
+  --risk-medium-foreground: #0F2230;
+  --risk-high: #E98132;
+  --risk-high-foreground: #0F2230;
+  --risk-extreme: #E06565;
+  --risk-extreme-foreground: #0F2230;
+
+  --status-pending: #E5B73B;
+  --status-approved: #2FAE82;
+  --status-rejected: #E06565;
+
+  --chart-1: #3FA6C9;
+  --chart-2: #2FAE82;
+  --chart-3: #E5B73B;
+  --chart-4: #E98132;
+  --chart-5: #9FC6D6;
+
+  --sidebar: #0B1E29;
+  --sidebar-foreground: #CFE3EC;
+  --sidebar-primary: #FFFFFF;
+  --sidebar-primary-foreground: #0B1E29;
+  --sidebar-accent: rgb(255 255 255 / 0.10);
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: rgb(255 255 255 / 0.08);
+  --sidebar-ring: #2FAE82;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  html {
+    @apply font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}

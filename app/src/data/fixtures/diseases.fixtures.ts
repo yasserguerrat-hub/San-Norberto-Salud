@@ -1,0 +1,68 @@
+import type { Disease } from '@/types/database.types'
+
+export const diseasesFixture: Disease[] = [
+  {
+    id: 'disease-hta',
+    nombre: 'Hipertensión arterial',
+    tipo: 'enfermedad_cronica',
+    descripcion: 'Presión arterial sostenidamente elevada.',
+    codigo_referencia: 'CIE-10 I10',
+    estado: 'activo',
+  },
+  {
+    id: 'disease-dm2',
+    nombre: 'Diabetes tipo 2',
+    tipo: 'enfermedad_cronica',
+    descripcion: 'Trastorno metabólico caracterizado por hiperglicemia crónica.',
+    codigo_referencia: 'CIE-10 E11',
+    estado: 'activo',
+  },
+  {
+    id: 'disease-ira',
+    nombre: 'Infecciones respiratorias agudas',
+    tipo: 'enfermedad_aguda',
+    descripcion: 'Cuadros respiratorios agudos, principalmente estacionales.',
+    codigo_referencia: 'CIE-10 J06',
+    estado: 'activo',
+  },
+  {
+    id: 'disease-obesidad',
+    nombre: 'Obesidad',
+    tipo: 'padecimiento',
+    descripcion: 'Exceso de peso corporal con riesgo para la salud.',
+    codigo_referencia: 'CIE-10 E66',
+    estado: 'activo',
+  },
+  {
+    id: 'disease-depresion',
+    nombre: 'Depresión',
+    tipo: 'enfermedad_cronica',
+    descripcion: 'Trastorno del ánimo diagnosticado por profesional de salud mental.',
+    codigo_referencia: 'CIE-10 F32',
+    estado: 'activo',
+  },
+  {
+    id: 'disease-erc',
+    nombre: 'Enfermedad renal crónica',
+    tipo: 'enfermedad_cronica',
+    descripcion: 'Pérdida progresiva de la función renal.',
+    codigo_referencia: 'CIE-10 N18',
+    estado: 'activo',
+  },
+  {
+    id: 'disease-cardiovascular',
+    nombre: 'Enfermedad cardiovascular',
+    tipo: 'enfermedad_cronica',
+    descripcion: 'Afecciones del corazón y vasos sanguíneos.',
+    codigo_referencia: 'CIE-10 I25',
+    estado: 'activo',
+  },
+  {
+    id: 'disease-artrosis',
+    nombre: 'Artrosis',
+    tipo: 'padecimiento',
+    descripcion: 'Desgaste degenerativo articular.',
+    codigo_referencia: 'CIE-10 M19',
+    estado: 'activo',
+  },
+]
