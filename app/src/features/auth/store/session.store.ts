@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { IS_DEMO_DATA } from '@/app/config/constants'
+import { supabase } from '@/lib/supabaseClient'
 import type { Profile } from '@/types/database.types'
 
 interface SessionState {
@@ -8,15 +10,18 @@ interface SessionState {
   logout: () => void
 }
 
-// Sesión demo persistida en sessionStorage (se cierra al cerrar la pestaña). El día que exista
-// Supabase Auth, este store pasa a reflejar `supabase.auth.onAuthStateChange` en vez de
-// guardar el perfil directamente, sin cambiar la forma que consumen los componentes.
+// Sesión demo persistida en sessionStorage (se cierra al cerrar la pestaña). En modo Supabase
+// (VITE_USE_SUPABASE=true) este mismo store sigue siendo la fuente que leen los componentes,
+// pero se mantiene sincronizado con `supabase.auth.onAuthStateChange` vía useAuthBootstrap.
 export const useSessionStore = create<SessionState>()(
   persist(
     (set) => ({
       profile: null,
       login: (profile) => set({ profile }),
-      logout: () => set({ profile: null }),
+      logout: () => {
+        if (!IS_DEMO_DATA) void supabase.auth.signOut()
+        set({ profile: null })
+      },
     }),
     {
       name: 'sn-session',

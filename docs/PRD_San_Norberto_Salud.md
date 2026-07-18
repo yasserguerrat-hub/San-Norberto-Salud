@@ -625,6 +625,17 @@ San Norberto Salud — PRD v1.0
 
 _<mark>Si el usuario propietario del producto adjunta un diseño de frontend, dashboard o logotipo, este debe utilizarse como referencia visual principal. No se debe modificar arbitrariamente estructura, paleta, componentes, jerarquía o distribución; los cambios por accesibilidad, seguridad o usabilidad deben mantener el lenguaje visual y explicar el ajuste realizado.</mark>_ 
 
+### **13.2 Estado actual de implementación (nota viva)**
+
+_Esta sección se actualiza a medida que avanza el desarrollo; no reemplaza el alcance ni las decisiones de las secciones anteriores, solo registra qué está conectado a Supabase real hoy._
+
+- **Paso 1 (frontend con datos de prueba)**: completo. SPA React/Vite/TS en `app/`, con datos demo (`IS_DEMO_DATA`).
+- **Paso 3 (conectar backend) y Paso 4 (autenticación y RLS)**: iniciados en local (Docker), con alcance mínimo viable:
+  - Conectado a Supabase real (`VITE_USE_SUPABASE=true`): autenticación (`RF-01`, `RF-02` pendiente de flujo de recuperación), catálogos `sectors`, `clinics`, `diseases`, `age_ranges`, `gender_categories`, `profiles`, y el flujo núcleo `health_records` (RF-08 a RF-16), con Row Level Security activo por rol/clínica (`RF-03`, `RNF-01`).
+  - **Pendiente de conectar** (siguen en datos demo): `commune_population`, `sector_population`, `demographic_population`, `risk_thresholds`, `percentage_thresholds`, `data_sources`, `import_batches`/`import_rows`, `ai_research_requests`/`ai_data_proposals`, comparaciones entre clínicas/sectores.
+  - Esquema y políticas RLS: `supabase/migrations/`. Instancia local vía `npx supabase start` (ver README del repositorio).
+- **Paso 10 (pruebas)**: no iniciado; `RNF-21` (pgTAP, Vitest, Playwright sobre reglas críticas) queda para una fase posterior.
+
 ## **14. Anexo — Dependencias Técnicas** 
 
 ### **14.1 Frontend** 

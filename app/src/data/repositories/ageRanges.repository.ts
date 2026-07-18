@@ -1,9 +1,12 @@
+import { IS_DEMO_DATA } from '@/app/config/constants'
 import { ageRangesFixture } from '@/data/fixtures/ageRanges.fixtures'
 import type { AgeRange } from '@/types/database.types'
 import { createInMemoryRepository } from './createInMemoryRepository'
+import { createSupabaseRepository } from './createSupabaseRepository'
 
-const store = [...ageRangesFixture]
-const base = createInMemoryRepository<AgeRange>(store)
+const base = IS_DEMO_DATA
+  ? createInMemoryRepository<AgeRange>([...ageRangesFixture])
+  : createSupabaseRepository<AgeRange>('age_ranges')
 
 export const ageRangesRepository = {
   ...base,

@@ -1,8 +1,13 @@
 import { FlaskConical } from 'lucide-react'
+import { useIsDemoMode } from '@/hooks/useIsDemoMode'
 import { cn } from '@/lib/utils'
 
 // Principio rector del PRD: todo dato de prueba debe estar claramente identificado como demo.
+// No se muestra cuando la app está conectada a Supabase real (VITE_USE_SUPABASE=true).
 export function DemoDataBadge({ className }: { className?: string }) {
+  const isDemoMode = useIsDemoMode()
+  if (!isDemoMode) return null
+
   return (
     <span
       className={cn(

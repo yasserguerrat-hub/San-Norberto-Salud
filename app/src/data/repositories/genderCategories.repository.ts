@@ -1,9 +1,12 @@
+import { IS_DEMO_DATA } from '@/app/config/constants'
 import { genderCategoriesFixture } from '@/data/fixtures/genderCategories.fixtures'
 import type { GenderCategory } from '@/types/database.types'
 import { createInMemoryRepository } from './createInMemoryRepository'
+import { createSupabaseRepository } from './createSupabaseRepository'
 
-const store = [...genderCategoriesFixture]
-const base = createInMemoryRepository<GenderCategory>(store)
+const base = IS_DEMO_DATA
+  ? createInMemoryRepository<GenderCategory>([...genderCategoriesFixture])
+  : createSupabaseRepository<GenderCategory>('gender_categories')
 
 export const genderCategoriesRepository = {
   ...base,
