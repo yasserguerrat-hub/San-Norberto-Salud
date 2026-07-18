@@ -30,10 +30,10 @@ insert into age_ranges (id, nombre, edad_min, edad_max, orden, estado) values
   ('00000000-0000-0000-0000-0000000000a6', 'Cuarta edad (80+)', 80, null, 6, 'activo');
 
 insert into gender_categories (id, nombre, orden, estado) values
-  ('00000000-0000-0000-0000-0000000000g1', 'Femenino', 1, 'activo'),
-  ('00000000-0000-0000-0000-0000000000g2', 'Masculino', 2, 'activo'),
-  ('00000000-0000-0000-0000-0000000000g3', 'Otro', 3, 'activo'),
-  ('00000000-0000-0000-0000-0000000000g4', 'No informado', 4, 'activo');
+  ('00000000-0000-0000-0000-0000000000f1', 'Femenino', 1, 'activo'),
+  ('00000000-0000-0000-0000-0000000000f2', 'Masculino', 2, 'activo'),
+  ('00000000-0000-0000-0000-0000000000f3', 'Otro', 3, 'activo'),
+  ('00000000-0000-0000-0000-0000000000f4', 'No informado', 4, 'activo');
 
 insert into diseases (id, nombre, tipo, descripcion, codigo_referencia, estado) values
   ('00000000-0000-0000-0000-0000000000d1', 'Hipertensión arterial', 'enfermedad_cronica', 'Presión arterial sostenidamente elevada.', 'CIE-10 I10', 'activo'),
