@@ -77,6 +77,7 @@ export function HealthRecordsPage() {
             estado: 'pendiente',
             aprobado_por: null,
             fecha_aprobacion: null,
+            observacion_revision: null,
             actualizado_en: new Date().toISOString(),
           },
         })
@@ -116,7 +117,10 @@ export function HealthRecordsPage() {
   }
 
   const canEdit = (record: HealthRecord) => {
-    if (record.estado !== 'pendiente') return false
+    // RF-11/RF-12: se puede corregir un registro pendiente o devuelto por el administrador
+    // ("requiere_correccion"); al guardar vuelve a quedar pendiente. Coincide con la política
+    // RLS health_records_update.
+    if (record.estado !== 'pendiente' && record.estado !== 'requiere_correccion') return false
     if (isAdmin) return true
     return record.clinic_id === profile?.clinic_id
   }
