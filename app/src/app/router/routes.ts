@@ -2,6 +2,7 @@ export const ROUTES = {
   home: '/',
   login: '/login',
   forgotPassword: '/recuperar-contrasena',
+  resetPassword: '/restablecer-contrasena',
   forbidden: '/sin-permisos',
   app: {
     root: '/app',

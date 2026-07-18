@@ -3,10 +3,12 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { z } from 'zod'
+import { IS_DEMO_DATA } from '@/app/config/constants'
 import { ROUTES } from '@/app/router/routes'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { supabase } from '@/lib/supabaseClient'
 
 const schema = z.object({ correo: z.email('Ingresa un correo institucional válido') })
 type FormValues = z.infer<typeof schema>
@@ -19,10 +21,16 @@ export function ForgotPasswordPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) })
 
-  const onSubmit = handleSubmit(async () => {
-    // RF-02: recuperación de contraseña vía correo electrónico (implementación real pendiente
-    // de la capa de backend). Por seguridad, la respuesta no revela si la cuenta existe.
-    await new Promise((resolve) => setTimeout(resolve, 400))
+  const onSubmit = handleSubmit(async ({ correo }) => {
+    // RF-02: recuperación de contraseña vía correo electrónico. Por seguridad, la respuesta
+    // nunca revela si la cuenta existe: se muestra el mismo mensaje con o sin coincidencia.
+    if (IS_DEMO_DATA) {
+      await new Promise((resolve) => setTimeout(resolve, 400))
+    } else {
+      await supabase.auth.resetPasswordForEmail(correo, {
+        redirectTo: `${window.location.origin}${ROUTES.resetPassword}`,
+      })
+    }
     setSent(true)
   })
 
