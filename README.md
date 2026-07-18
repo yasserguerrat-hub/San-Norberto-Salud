@@ -51,6 +51,18 @@ La Edge Function `supabase/functions/ai-research` resuelve el proveedor por vari
 - Sin configurar nada, usa un proveedor **mock** determinístico — permite probar todo el flujo (solicitud → propuesta → aprobación) sin ninguna API key.
 - Para usar Anthropic real: `npx supabase secrets set AI_PROVIDER=anthropic ANTHROPIC_API_KEY=sk-...` y reinicia con `npx supabase stop && npx supabase start`. Agregar otro proveedor implica sumar un `AiProvider` más en `resolveProvider()` — la Edge Function, el frontend y el modelo de datos no cambian (RNF-19).
 
+### Acceder desde otro equipo de la misma red
+
+Por defecto, tanto Vite como Supabase local solo aceptan conexiones desde el propio equipo. Para probar desde otro computador de la misma red (p. ej. abrir la app desde `192.168.1.15` mientras el servidor corre en `192.168.1.13`):
+
+1. `app/vite.config.ts` ya tiene `server: { host: true }` — expone Vite en todas las interfaces de red, no solo `localhost`.
+2. `app/.env.local`: `VITE_SUPABASE_URL` debe apuntar a la IP LAN del equipo que corre Docker (no a `127.0.0.1`, que en cada computador significa "sí mismo"), p. ej. `http://192.168.1.13:54321`.
+3. `supabase/config.toml` → `auth.additional_redirect_urls` debe incluir esa misma IP LAN (`http://192.168.1.13:5173` y su ruta de restablecer contraseña) para que los enlaces de recuperación/invitación por correo funcionen también desde otros equipos. Aplicar con `npx supabase stop && npx supabase start`.
+4. Desde el otro equipo, abrir `http://192.168.1.13:5173` (la IP LAN del equipo que corre todo, puerto de Vite).
+5. Docker ya publica los puertos de Supabase en todas las interfaces (`0.0.0.0`) por defecto — no requiere cambios adicionales ahí.
+
+Esto solo funciona mientras el equipo que corre Docker + `npm run dev` esté encendido; no es un despliegue, es acceso a la instancia local vía red. Si el firewall de Windows está activo, debe permitir conexiones entrantes en los puertos 5173 (Vite), 54321 (API Supabase) y 54323 (Studio, opcional).
+
 ## Producción
 
 El proyecto de Supabase de producción se crea por separado en [supabase.com](https://supabase.com); las migraciones de `supabase/migrations` se aplican allí con `npx supabase link` + `npx supabase db push` cuando corresponda.

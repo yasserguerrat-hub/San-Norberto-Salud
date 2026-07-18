@@ -7,6 +7,11 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // host: true expone el server en todas las interfaces (0.0.0.0), no solo localhost —
+  // necesario para probar desde otro equipo de la misma red durante desarrollo.
+  server: {
+    host: true,
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
