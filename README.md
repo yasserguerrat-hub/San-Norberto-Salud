@@ -44,6 +44,13 @@ Para detener los contenedores: `npx supabase stop`.
 
 Sin `VITE_USE_SUPABASE=true`, la app sigue funcionando 100% con datos demo en memoria, sin depender de Docker.
 
+### Investigación asistida por IA (RF-21/26)
+
+La Edge Function `supabase/functions/ai-research` resuelve el proveedor por variable de entorno (`AI_PROVIDER`), agnóstico del frontend y del modelo de datos (RNF-19/20):
+
+- Sin configurar nada, usa un proveedor **mock** determinístico — permite probar todo el flujo (solicitud → propuesta → aprobación) sin ninguna API key.
+- Para usar Anthropic real: `npx supabase secrets set AI_PROVIDER=anthropic ANTHROPIC_API_KEY=sk-...` y reinicia con `npx supabase stop && npx supabase start`. Agregar otro proveedor implica sumar un `AiProvider` más en `resolveProvider()` — la Edge Function, el frontend y el modelo de datos no cambian (RNF-19).
+
 ## Producción
 
 El proyecto de Supabase de producción se crea por separado en [supabase.com](https://supabase.com); las migraciones de `supabase/migrations` se aplican allí con `npx supabase link` + `npx supabase db push` cuando corresponda.
