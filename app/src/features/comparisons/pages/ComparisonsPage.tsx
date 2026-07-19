@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DemoDataBadge } from '@/components/shared/badges/DemoDataBadge'
 import { QueryStateBoundary } from '@/components/shared/states/QueryStateBoundary'
 import { diseasesRepository } from '@/data/repositories/diseases.repository'
@@ -13,7 +13,15 @@ import type { ComparisonFilters } from '../types/comparison.types'
 
 export function ComparisonsPage() {
   const diseasesQuery = useQuery({ queryKey: queryKeys.diseases.list(), queryFn: () => diseasesRepository.list() })
-  const [filters, setFilters] = useState<ComparisonFilters>({ modo: 'sectores', diseaseId: 'disease-ira', mes: 6, anio: 2026 })
+  const [filters, setFilters] = useState<ComparisonFilters>({ modo: 'sectores', diseaseId: '', mes: 6, anio: 2026 })
+
+  // El id de la primera enfermedad solo se conoce tras cargar el catálogo real (Supabase asigna
+  // uuids), por eso no puede fijarse en el useState inicial.
+  useEffect(() => {
+    if (filters.diseaseId === '' && diseasesQuery.data && diseasesQuery.data.length > 0) {
+      setFilters((prev) => ({ ...prev, diseaseId: diseasesQuery.data[0].id }))
+    }
+  }, [diseasesQuery.data, filters.diseaseId])
 
   const comparisonQuery = useComparisonData(filters)
 

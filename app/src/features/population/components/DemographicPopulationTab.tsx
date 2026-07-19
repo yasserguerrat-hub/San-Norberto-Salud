@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 import { DataTable } from '@/components/shared/data-table/DataTable'
+import { DataTableToolbar } from '@/components/shared/data-table/DataTableToolbar'
 import { toastError, toastSuccess } from '@/components/shared/feedback/ToastHelpers'
 import { QueryStateBoundary } from '@/components/shared/states/QueryStateBoundary'
 import { Button } from '@/components/ui/button'
@@ -18,7 +19,7 @@ import { sectorsRepository } from '@/data/repositories/sectors.repository'
 import { useConfirm } from '@/hooks/useConfirm'
 import { formatNumber } from '@/lib/formatters/number'
 import { queryKeys } from '@/lib/query/queryKeys'
-import type { DemographicPopulation } from '@/types/database.types'
+import type { DemographicPopulation, GenderCategory } from '@/types/database.types'
 import {
   useCreateDemographicPopulation,
   useDeleteDemographicPopulation,
@@ -32,13 +33,21 @@ import {
 } from '../schemas/demographicPopulation.schema'
 
 const COMUNA_VALUE = '__comuna__'
+const RANGO_EDAD_ORDEN = new Map(RANGOS_EDAD_QUINQUENALES_INE.map((r, i) => [r, i]))
 
 type FormInput = z.input<typeof demographicPopulationSchema>
+
+interface PivotRow {
+  rango_edad: string
+  porGenero: Record<string, DemographicPopulation | undefined>
+}
 
 function DemographicPopulationForm({
   row,
   defaultSectorId,
   defaultAnio,
+  defaultRangoEdad,
+  defaultGenderId,
   sectorOptions,
   genderOptions,
   onSubmit,
@@ -48,6 +57,8 @@ function DemographicPopulationForm({
   row?: DemographicPopulation
   defaultSectorId: string
   defaultAnio: number
+  defaultRangoEdad?: string
+  defaultGenderId?: string
   sectorOptions: { value: string; label: string }[]
   genderOptions: { value: string; label: string }[]
   onSubmit: (values: DemographicPopulationFormValues) => Promise<void> | void
@@ -70,7 +81,12 @@ function DemographicPopulationForm({
           gender_id: row.gender_id,
           poblacion: row.poblacion,
         }
-      : { sector_id: defaultSectorId === COMUNA_VALUE ? null : defaultSectorId, anio: defaultAnio },
+      : {
+          sector_id: defaultSectorId === COMUNA_VALUE ? null : defaultSectorId,
+          anio: defaultAnio,
+          rango_edad: defaultRangoEdad,
+          gender_id: defaultGenderId,
+        },
   })
 
   const sectorValue = watch('sector_id') ?? COMUNA_VALUE
@@ -157,6 +173,7 @@ function DemographicPopulationForm({
 export function DemographicPopulationTab({ canManage }: { canManage: boolean }) {
   const [anio, setAnio] = useState(2025)
   const [sectorFilter, setSectorFilter] = useState<string>(COMUNA_VALUE)
+  const [search, setSearch] = useState('')
 
   const sectorsQuery = useQuery({ queryKey: queryKeys.sectors.list(), queryFn: () => sectorsRepository.list() })
   const gendersQuery = useQuery({ queryKey: queryKeys.genderCategories.list(), queryFn: () => genderCategoriesRepository.list() })
@@ -165,111 +182,174 @@ export function DemographicPopulationTab({ canManage }: { canManage: boolean }) 
   const query = useDemographicPopulation({ sectorId: effectiveSectorId, anio })
 
   const [editing, setEditing] = useState<DemographicPopulation | undefined>(undefined)
+  const [createDefaults, setCreateDefaults] = useState<{ rango_edad?: string; gender_id?: string }>({})
   const [dialogOpen, setDialogOpen] = useState(false)
   const createMutation = useCreateDemographicPopulation()
   const updateMutation = useUpdateDemographicPopulation()
   const deleteMutation = useDeleteDemographicPopulation()
   const confirm = useConfirm()
 
-  const genderById = new Map((gendersQuery.data ?? []).map((g) => [g.id, g.nombre]))
   const sectorOptions = (sectorsQuery.data ?? []).map((s) => ({ value: s.id, label: s.nombre }))
   const genderOptions = (gendersQuery.data ?? []).map((g) => ({ value: g.id, label: g.nombre }))
+  const genderById = new Map<string, GenderCategory>((gendersQuery.data ?? []).map((g) => [g.id, g]))
 
-  const columns: ColumnDef<DemographicPopulation>[] = [
+  const openCreate = (defaults: { rango_edad?: string; gender_id?: string } = {}) => {
+    setEditing(undefined)
+    setCreateDefaults(defaults)
+    setDialogOpen(true)
+  }
+
+  const openEdit = (record: DemographicPopulation) => {
+    setEditing(record)
+    setCreateDefaults({})
+    setDialogOpen(true)
+  }
+
+  const handleDelete = async (record: DemographicPopulation) => {
+    const confirmed = await confirm({
+      title: `¿Eliminar "${record.rango_edad}"?`,
+      variant: 'destructive',
+      confirmLabel: 'Eliminar',
+    })
+    if (!confirmed) return
+    try {
+      await deleteMutation.mutateAsync(record.id)
+      toastSuccess('Registro eliminado')
+    } catch (error) {
+      toastError('No se pudo eliminar', error instanceof Error ? error.message : undefined)
+    }
+  }
+
+  const normalizedSearch = search.trim().toLowerCase()
+
+  const buildPivot = (rows: DemographicPopulation[]) => {
+    const filtered = normalizedSearch ? rows.filter((r) => r.rango_edad.toLowerCase().includes(normalizedSearch)) : rows
+
+    const generosPresentes = Array.from(new Set(filtered.map((r) => r.gender_id)))
+      .map((id) => genderById.get(id))
+      .filter((g): g is GenderCategory => !!g)
+      .sort((a, b) => a.orden - b.orden)
+
+    const pivotMap = new Map<string, PivotRow>()
+    for (const r of filtered) {
+      if (!pivotMap.has(r.rango_edad)) pivotMap.set(r.rango_edad, { rango_edad: r.rango_edad, porGenero: {} })
+      pivotMap.get(r.rango_edad)!.porGenero[r.gender_id] = r
+    }
+
+    const pivotRows = Array.from(pivotMap.values()).sort((a, b) => {
+      const ai = RANGO_EDAD_ORDEN.get(a.rango_edad) ?? Number.MAX_SAFE_INTEGER
+      const bi = RANGO_EDAD_ORDEN.get(b.rango_edad) ?? Number.MAX_SAFE_INTEGER
+      return ai !== bi ? ai - bi : a.rango_edad.localeCompare(b.rango_edad)
+    })
+
+    return { pivotRows, generosPresentes }
+  }
+
+  const buildColumns = (generosPresentes: GenderCategory[]): ColumnDef<PivotRow>[] => [
     { accessorKey: 'rango_edad', header: 'Rango de edad' },
-    { accessorKey: 'gender_id', header: 'Género', cell: ({ row }) => genderById.get(row.original.gender_id) ?? '—' },
-    { accessorKey: 'poblacion', header: 'Población', cell: ({ row }) => formatNumber(row.original.poblacion) },
-    ...(canManage
-      ? [
-          {
-            id: 'actions',
-            header: '',
-            cell: ({ row }: { row: { original: DemographicPopulation } }) => (
-              <div className="flex justify-end gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={() => {
-                    setEditing(row.original)
-                    setDialogOpen(true)
-                  }}
-                >
-                  <Pencil className="size-3.5" aria-hidden="true" />
-                  <span className="sr-only">Editar</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={async () => {
-                    const confirmed = await confirm({
-                      title: `¿Eliminar "${row.original.rango_edad}"?`,
-                      variant: 'destructive',
-                      confirmLabel: 'Eliminar',
-                    })
-                    if (!confirmed) return
-                    try {
-                      await deleteMutation.mutateAsync(row.original.id)
-                      toastSuccess('Registro eliminado')
-                    } catch (error) {
-                      toastError('No se pudo eliminar', error instanceof Error ? error.message : undefined)
-                    }
-                  }}
-                >
-                  <Trash2 className="size-3.5 text-destructive" aria-hidden="true" />
-                  <span className="sr-only">Eliminar</span>
-                </Button>
-              </div>
-            ),
-          } satisfies ColumnDef<DemographicPopulation>,
-        ]
-      : []),
+    ...generosPresentes.map(
+      (genero): ColumnDef<PivotRow> => ({
+        id: `genero-${genero.id}`,
+        header: genero.nombre,
+        cell: ({ row }) => {
+          const record = row.original.porGenero[genero.id]
+          if (!record) {
+            return canManage ? (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={() => openCreate({ rango_edad: row.original.rango_edad, gender_id: genero.id })}
+              >
+                <Plus className="size-3.5" aria-hidden="true" />
+                <span className="sr-only">Agregar {genero.nombre}</span>
+              </Button>
+            ) : (
+              <span className="text-muted-foreground">—</span>
+            )
+          }
+          return (
+            <div className="flex items-center justify-between gap-1">
+              <span>{formatNumber(record.poblacion)}</span>
+              {canManage ? (
+                <div className="flex gap-0.5">
+                  <Button variant="ghost" size="icon-sm" onClick={() => openEdit(record)}>
+                    <Pencil className="size-3.5" aria-hidden="true" />
+                    <span className="sr-only">Editar</span>
+                  </Button>
+                  <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(record)}>
+                    <Trash2 className="size-3.5 text-destructive" aria-hidden="true" />
+                    <span className="sr-only">Eliminar</span>
+                  </Button>
+                </div>
+              ) : null}
+            </div>
+          )
+        },
+      }),
+    ),
+    {
+      id: 'total',
+      header: 'Total',
+      cell: ({ row }) =>
+        formatNumber(Object.values(row.original.porGenero).reduce((suma, r) => suma + (r?.poblacion ?? 0), 0)),
+    },
   ]
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <Select value={sectorFilter} onValueChange={setSectorFilter}>
-            <SelectTrigger className="w-56">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={COMUNA_VALUE}>Toda la comuna</SelectItem>
-              {sectorOptions.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            type="number"
-            value={anio}
-            onChange={(e) => setAnio(Number(e.target.value))}
-            className="w-24"
-            aria-label="Año"
-          />
-        </div>
-        {canManage ? (
-          <Button
-            size="sm"
-            onClick={() => {
-              setEditing(undefined)
-              setDialogOpen(true)
-            }}
-          >
-            <Plus className="size-3.5" aria-hidden="true" />
-            Nuevo registro
-          </Button>
-        ) : null}
-      </div>
+      <DataTableToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Buscar por rango de edad…"
+        filters={
+          <>
+            <Select value={sectorFilter} onValueChange={setSectorFilter}>
+              <SelectTrigger className="w-56">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={COMUNA_VALUE}>Toda la comuna</SelectItem>
+                {sectorOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              type="number"
+              value={anio}
+              onChange={(e) => setAnio(Number(e.target.value))}
+              className="w-24"
+              aria-label="Año"
+            />
+          </>
+        }
+        actions={
+          canManage ? (
+            <Button size="sm" onClick={() => openCreate()}>
+              <Plus className="size-3.5" aria-hidden="true" />
+              Nuevo registro
+            </Button>
+          ) : undefined
+        }
+      />
       <p className="text-xs text-muted-foreground">
         Población base para calcular tasas por edad y género (RF-13). El rango de edad es texto libre — puede usar los
         grupos quinquenales del INE u otra agrupación de su fuente.
       </p>
 
-      <QueryStateBoundary query={query} emptyTitle="Sin datos demográficos para este filtro">
-        {(rows) => <DataTable columns={columns} data={rows} pageSize={rows.length || 1} />}
+      <QueryStateBoundary
+        query={query}
+        emptyTitle="Sin datos demográficos para este filtro"
+        hasActiveFilters={normalizedSearch !== ''}
+        isEmpty={(rows) => buildPivot(rows).pivotRows.length === 0}
+        onClearFilters={() => setSearch('')}
+      >
+        {(rows) => {
+          const { pivotRows, generosPresentes } = buildPivot(rows)
+          return <DataTable columns={buildColumns(generosPresentes)} data={pivotRows} pageSize={pivotRows.length || 1} />
+        }}
       </QueryStateBoundary>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -281,6 +361,8 @@ export function DemographicPopulationTab({ canManage }: { canManage: boolean }) 
             row={editing}
             defaultSectorId={sectorFilter}
             defaultAnio={anio}
+            defaultRangoEdad={createDefaults.rango_edad}
+            defaultGenderId={createDefaults.gender_id}
             sectorOptions={sectorOptions}
             genderOptions={genderOptions}
             isSubmitting={createMutation.isPending || updateMutation.isPending}

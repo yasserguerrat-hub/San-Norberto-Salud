@@ -10,6 +10,7 @@ import type { ComparisonFilters } from '../types/comparison.types'
 export function useComparisonData(filters: ComparisonFilters) {
   return useQuery({
     queryKey: ['comparisons', filters],
+    enabled: filters.diseaseId !== '',
     queryFn: async () => {
       const [records, clinics, sectors, sectorPopulation, riskThresholds] = await Promise.all([
         healthRecordsRepository.list({ anio: filters.anio, mes: filters.mes, estado: 'aprobado', diseaseId: filters.diseaseId }),

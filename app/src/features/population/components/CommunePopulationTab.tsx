@@ -4,6 +4,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import type { z } from 'zod'
 import { DataTable } from '@/components/shared/data-table/DataTable'
+import { DataTableToolbar } from '@/components/shared/data-table/DataTableToolbar'
 import { toastError, toastSuccess } from '@/components/shared/feedback/ToastHelpers'
 import { QueryStateBoundary } from '@/components/shared/states/QueryStateBoundary'
 import { Button } from '@/components/ui/button'
@@ -133,6 +134,7 @@ export function CommunePopulationTab({ canManage }: { canManage: boolean }) {
   const confirm = useConfirm()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<CommunePopulation | undefined>(undefined)
+  const [search, setSearch] = useState('')
 
   const columns: ColumnDef<CommunePopulation>[] = [
     { accessorKey: 'anio', header: 'Año' },
@@ -195,25 +197,46 @@ export function CommunePopulationTab({ canManage }: { canManage: boolean }) {
       : []),
   ]
 
+  const normalizedSearch = search.trim().toLowerCase()
+  const filterRows = (rows: CommunePopulation[]) =>
+    normalizedSearch
+      ? rows.filter((r) =>
+          [r.anio.toString(), r.fuente, estadoValidacionLabel(r.estado_validacion)].some((v) =>
+            v.toLowerCase().includes(normalizedSearch),
+          ),
+        )
+      : rows
+
   return (
     <div className="flex flex-col gap-3">
-      {canManage ? (
-        <div className="flex justify-end">
-          <Button
-            size="sm"
-            onClick={() => {
-              setEditing(undefined)
-              setDialogOpen(true)
-            }}
-          >
-            <Plus className="size-3.5" aria-hidden="true" />
-            Nuevo año
-          </Button>
-        </div>
-      ) : null}
+      <DataTableToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Buscar por año o fuente…"
+        actions={
+          canManage ? (
+            <Button
+              size="sm"
+              onClick={() => {
+                setEditing(undefined)
+                setDialogOpen(true)
+              }}
+            >
+              <Plus className="size-3.5" aria-hidden="true" />
+              Nuevo año
+            </Button>
+          ) : undefined
+        }
+      />
 
-      <QueryStateBoundary query={query} emptyTitle="Todavía no hay población comunal registrada">
-        {(rows) => <DataTable columns={columns} data={[...rows].sort((a, b) => b.anio - a.anio)} />}
+      <QueryStateBoundary
+        query={query}
+        emptyTitle="Todavía no hay población comunal registrada"
+        hasActiveFilters={normalizedSearch !== ''}
+        isEmpty={(rows) => filterRows(rows).length === 0}
+        onClearFilters={() => setSearch('')}
+      >
+        {(rows) => <DataTable columns={columns} data={filterRows([...rows]).sort((a, b) => b.anio - a.anio)} />}
       </QueryStateBoundary>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

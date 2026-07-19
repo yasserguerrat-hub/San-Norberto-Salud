@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import type { z } from 'zod'
 import { DataTable } from '@/components/shared/data-table/DataTable'
+import { DataTableToolbar } from '@/components/shared/data-table/DataTableToolbar'
 import { toastError, toastSuccess } from '@/components/shared/feedback/ToastHelpers'
 import { QueryStateBoundary } from '@/components/shared/states/QueryStateBoundary'
 import { Button } from '@/components/ui/button'
@@ -118,6 +119,7 @@ export function SectorPopulationTab({ canManage }: { canManage: boolean }) {
   const confirm = useConfirm()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<SectorPopulation | undefined>(undefined)
+  const [search, setSearch] = useState('')
 
   const sectorById = new Map((sectorsQuery.data ?? []).map((s) => [s.id, s.nombre]))
   const sectorOptions = (sectorsQuery.data ?? []).map((s) => ({ value: s.id, label: s.nombre }))
@@ -173,34 +175,57 @@ export function SectorPopulationTab({ canManage }: { canManage: boolean }) {
       : []),
   ]
 
+  const normalizedSearch = search.trim().toLowerCase()
+  const filterRows = (rows: SectorPopulation[]) =>
+    normalizedSearch
+      ? rows.filter((r) =>
+          [sectorById.get(r.sector_id) ?? '', r.fuente, estadoValidacionLabel(r.estado_validacion)].some((v) =>
+            v.toLowerCase().includes(normalizedSearch),
+          ),
+        )
+      : rows
+
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-2">
-        <Select value={anio} onValueChange={setAnio}>
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="2026">2026</SelectItem>
-            <SelectItem value="2025">2025</SelectItem>
-          </SelectContent>
-        </Select>
-        {canManage ? (
-          <Button
-            size="sm"
-            onClick={() => {
-              setEditing(undefined)
-              setDialogOpen(true)
-            }}
-          >
-            <Plus className="size-3.5" aria-hidden="true" />
-            Nuevo registro
-          </Button>
-        ) : null}
-      </div>
+      <DataTableToolbar
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Buscar por sector o fuente…"
+        filters={
+          <Select value={anio} onValueChange={setAnio}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="2026">2026</SelectItem>
+              <SelectItem value="2025">2025</SelectItem>
+            </SelectContent>
+          </Select>
+        }
+        actions={
+          canManage ? (
+            <Button
+              size="sm"
+              onClick={() => {
+                setEditing(undefined)
+                setDialogOpen(true)
+              }}
+            >
+              <Plus className="size-3.5" aria-hidden="true" />
+              Nuevo registro
+            </Button>
+          ) : undefined
+        }
+      />
 
-      <QueryStateBoundary query={query} emptyTitle="Sin población registrada para este año">
-        {(rows) => <DataTable columns={columns} data={rows} />}
+      <QueryStateBoundary
+        query={query}
+        emptyTitle="Sin población registrada para este año"
+        hasActiveFilters={normalizedSearch !== ''}
+        isEmpty={(rows) => filterRows(rows).length === 0}
+        onClearFilters={() => setSearch('')}
+      >
+        {(rows) => <DataTable columns={columns} data={filterRows(rows)} />}
       </QueryStateBoundary>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
