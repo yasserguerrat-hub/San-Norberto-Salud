@@ -116,9 +116,12 @@ export interface SectorPopulation {
 
 export interface DemographicPopulation {
   id: string
-  sector_id: string
+  /** null = toda la comuna (no un sector específico). */
+  sector_id: string | null
   anio: number
-  age_range_id: string
+  /** Texto libre, independiente del catálogo age_ranges (evita conflicto de superposición con
+   * los rangos amplios usados en registros de salud — ver migración 20260720000000). */
+  rango_edad: string
   gender_id: string
   poblacion: number
 }

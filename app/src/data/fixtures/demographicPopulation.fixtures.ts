@@ -47,7 +47,7 @@ function buildDemographicPopulationFixture(): DemographicPopulation[] {
           id: `demo-pop-${sectorPop.sector_id}-${sectorPop.anio}-${ageRange.id}-${gender.id}`,
           sector_id: sectorPop.sector_id,
           anio: sectorPop.anio,
-          age_range_id: ageRange.id,
+          rango_edad: ageRange.nombre,
           gender_id: gender.id,
           poblacion,
         })

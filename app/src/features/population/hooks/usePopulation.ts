@@ -4,7 +4,7 @@ import { type DemographicPopulationFilters, demographicPopulationRepository } fr
 import { type SectorPopulationFilters, sectorPopulationRepository } from '@/data/repositories/sectorPopulation.repository'
 import { queryKeys } from '@/lib/query/queryKeys'
 import type { CommunePopulationFormValues } from '../schemas/communePopulation.schema'
-import type { DemographicPopulationEditValues } from '../schemas/demographicPopulation.schema'
+import type { DemographicPopulationFormValues } from '../schemas/demographicPopulation.schema'
 import type { SectorPopulationFormValues } from '../schemas/sectorPopulation.schema'
 
 // --- Comunal ---
@@ -66,10 +66,24 @@ export function useDemographicPopulation(filters?: DemographicPopulationFilters)
     queryFn: () => demographicPopulationRepository.list(filters),
   })
 }
+export function useCreateDemographicPopulation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: DemographicPopulationFormValues) => demographicPopulationRepository.create(input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.demographicPopulation.all }),
+  })
+}
 export function useUpdateDemographicPopulation() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: DemographicPopulationEditValues }) => demographicPopulationRepository.update(id, input),
+    mutationFn: ({ id, input }: { id: string; input: DemographicPopulationFormValues }) => demographicPopulationRepository.update(id, input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.demographicPopulation.all }),
+  })
+}
+export function useDeleteDemographicPopulation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => demographicPopulationRepository.remove(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.demographicPopulation.all }),
   })
 }

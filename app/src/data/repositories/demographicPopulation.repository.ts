@@ -6,8 +6,8 @@ import { createSupabaseRepository } from './createSupabaseRepository'
 
 export interface DemographicPopulationFilters {
   anio?: number
-  sectorId?: string
-  ageRangeId?: string
+  /** undefined = sin filtro · null = solo registros de toda la comuna · string = un sector. */
+  sectorId?: string | null
   genderId?: string
 }
 
@@ -19,8 +19,7 @@ export const demographicPopulationRepository = IS_DEMO_DATA
         list(filters?: DemographicPopulationFilters) {
           return base.list((row) => {
             if (filters?.anio && row.anio !== filters.anio) return false
-            if (filters?.sectorId && row.sector_id !== filters.sectorId) return false
-            if (filters?.ageRangeId && row.age_range_id !== filters.ageRangeId) return false
+            if (filters?.sectorId !== undefined && row.sector_id !== filters.sectorId) return false
             if (filters?.genderId && row.gender_id !== filters.genderId) return false
             return true
           })
@@ -34,8 +33,9 @@ export const demographicPopulationRepository = IS_DEMO_DATA
         list(filters?: DemographicPopulationFilters) {
           return base.list((query) => {
             if (filters?.anio) query = query.eq('anio', filters.anio)
-            if (filters?.sectorId) query = query.eq('sector_id', filters.sectorId)
-            if (filters?.ageRangeId) query = query.eq('age_range_id', filters.ageRangeId)
+            if (filters?.sectorId !== undefined) {
+              query = filters.sectorId === null ? query.is('sector_id', null) : query.eq('sector_id', filters.sectorId)
+            }
             if (filters?.genderId) query = query.eq('gender_id', filters.genderId)
             return query
           })
