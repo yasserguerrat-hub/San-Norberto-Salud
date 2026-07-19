@@ -45,10 +45,26 @@ function CommunePopulationForm({
   } = useForm<FormInput, unknown, CommunePopulationFormValues>({
     resolver: zodResolver(communePopulationSchema),
     defaultValues: row
-      ? { anio: row.anio, poblacion: row.poblacion, fuente: row.fuente, estado_validacion: row.estado_validacion }
+      ? {
+          anio: row.anio,
+          poblacion: row.poblacion,
+          poblacion_mujeres: row.poblacion_mujeres ?? undefined,
+          poblacion_hombres: row.poblacion_hombres ?? undefined,
+          fuente: row.fuente,
+          estado_validacion: row.estado_validacion,
+        }
       : { estado_validacion: 'validado' },
   })
   const estado = watch('estado_validacion')
+  const poblacionTotal = watch('poblacion')
+  const poblacionMujeres = watch('poblacion_mujeres')
+  const poblacionHombres = watch('poblacion_hombres')
+
+  const sumaSexo =
+    poblacionMujeres !== undefined && poblacionMujeres !== null && poblacionHombres !== undefined && poblacionHombres !== null
+      ? Number(poblacionMujeres) + Number(poblacionHombres)
+      : null
+  const sumaNoCoincide = sumaSexo !== null && Number(poblacionTotal) > 0 && sumaSexo !== Number(poblacionTotal)
 
   return (
     <form onSubmit={handleSubmit((values) => onSubmit(values))} noValidate className="flex flex-col gap-3.5">
@@ -64,6 +80,30 @@ function CommunePopulationForm({
           <FieldError errors={errors.poblacion ? [errors.poblacion] : undefined} />
         </Field>
       </div>
+
+      <div className="grid grid-cols-2 gap-3.5">
+        <Field data-invalid={!!errors.poblacion_mujeres}>
+          <FieldLabel htmlFor="cp_mujeres">Mujeres (opcional)</FieldLabel>
+          <Input id="cp_mujeres" type="number" aria-invalid={!!errors.poblacion_mujeres} {...register('poblacion_mujeres')} />
+          <FieldError errors={errors.poblacion_mujeres ? [errors.poblacion_mujeres] : undefined} />
+        </Field>
+        <Field data-invalid={!!errors.poblacion_hombres}>
+          <FieldLabel htmlFor="cp_hombres">Hombres (opcional)</FieldLabel>
+          <Input id="cp_hombres" type="number" aria-invalid={!!errors.poblacion_hombres} {...register('poblacion_hombres')} />
+          <FieldError errors={errors.poblacion_hombres ? [errors.poblacion_hombres] : undefined} />
+        </Field>
+      </div>
+      {sumaNoCoincide ? (
+        <p className="-mt-1.5 text-xs text-[#8a6a12]">
+          Mujeres + hombres ({formatNumber(sumaSexo!)}) no coincide con la población total ({formatNumber(Number(poblacionTotal))}).
+          Puede deberse a categorías no binarias o no informadas en la fuente; se guardará igual.
+        </p>
+      ) : (
+        <p className="-mt-1.5 text-xs text-muted-foreground">
+          Si la fuente reporta el desglose por sexo (p. ej. INE), complétalo aquí; sin esto solo se usa el total.
+        </p>
+      )}
+
       <Field data-invalid={!!errors.fuente}>
         <FieldLabel htmlFor="cp_fuente">Fuente</FieldLabel>
         <Input id="cp_fuente" aria-invalid={!!errors.fuente} {...register('fuente')} />
@@ -97,6 +137,16 @@ export function CommunePopulationTab({ canManage }: { canManage: boolean }) {
   const columns: ColumnDef<CommunePopulation>[] = [
     { accessorKey: 'anio', header: 'Año' },
     { accessorKey: 'poblacion', header: 'Población', cell: ({ row }) => formatNumber(row.original.poblacion) },
+    {
+      id: 'poblacion_mujeres',
+      header: 'Mujeres',
+      cell: ({ row }) => (row.original.poblacion_mujeres != null ? formatNumber(row.original.poblacion_mujeres) : '—'),
+    },
+    {
+      id: 'poblacion_hombres',
+      header: 'Hombres',
+      cell: ({ row }) => (row.original.poblacion_hombres != null ? formatNumber(row.original.poblacion_hombres) : '—'),
+    },
     { accessorKey: 'fuente', header: 'Fuente' },
     { accessorKey: 'estado_validacion', header: 'Estado', cell: ({ row }) => estadoValidacionLabel(row.original.estado_validacion) },
     ...(canManage

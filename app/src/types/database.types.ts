@@ -97,6 +97,10 @@ export interface CommunePopulation {
   id: string
   anio: number
   poblacion: number
+  /** Desglose opcional por sexo (el INE lo reporta a nivel comunal); puede no sumar el total
+   * exacto si existen categorías no binarias o no informadas en la fuente. */
+  poblacion_mujeres: number | null
+  poblacion_hombres: number | null
   fuente: string
   estado_validacion: EstadoValidacionPoblacion
 }
