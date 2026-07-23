@@ -1,6 +1,8 @@
-import { Outlet } from 'react-router-dom'
+import { ArrowLeft } from 'lucide-react'
+import { Link, Outlet } from 'react-router-dom'
 import logoUrl from '@/assets/images/logo-sannorberto.png'
 import { COMUNA } from '@/app/config/constants'
+import { ROUTES } from '@/app/router/routes'
 
 const PRINCIPIOS = [
   'La plataforma trabaja exclusivamente con información estadística agregada; no almacena identificadores personales de pacientes.',
@@ -42,7 +44,14 @@ export function AuthLayout() {
           <div>Comuna de {COMUNA} · Región Metropolitana · Uso interno</div>
         </div>
       </div>
-      <div className="flex flex-1 items-center justify-center bg-muted px-6 py-12">
+      <div className="relative flex flex-1 items-center justify-center bg-muted px-6 py-12">
+        <Link
+          to={ROUTES.home}
+          className="absolute top-6 left-6 flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="size-3.5" aria-hidden="true" />
+          Volver al inicio
+        </Link>
         <Outlet />
       </div>
     </div>
