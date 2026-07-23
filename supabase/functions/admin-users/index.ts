@@ -55,29 +55,32 @@ Deno.serve(async (req) => {
   }
 
   if (body.action === 'create') {
-    const { correo, nombre, apellido, rol, clinic_id, puede_ver_comparaciones, redirect_to } = body as {
+    const { correo, nombre, apellido, rol, clinic_id, puede_ver_comparaciones, password } = body as {
       correo?: string
       nombre?: string
       apellido?: string
       rol?: string
       clinic_id?: string | null
       puede_ver_comparaciones?: boolean
-      redirect_to?: string
+      password?: string
     }
-    if (!correo || !nombre || !apellido || !rol) return json(400, { error: 'Faltan campos obligatorios' })
+    if (!correo || !nombre || !apellido || !rol || !password) return json(400, { error: 'Faltan campos obligatorios' })
     if (rol !== 'admin_general' && rol !== 'usuario_clinica') return json(400, { error: 'Rol no válido' })
     if (rol === 'usuario_clinica' && !clinic_id) return json(400, { error: 'Selecciona la clínica del usuario' })
+    if (password.length < 8) return json(400, { error: 'La contraseña debe tener al menos 8 caracteres' })
 
-    // Invitación por correo: el usuario define su propia contraseña en /restablecer-contrasena.
-    const { data: invited, error: inviteError } = await admin.auth.admin.inviteUserByEmail(correo, {
-      redirectTo: redirect_to,
+    // El administrador define la contraseña directamente (no hay envío de correo configurado).
+    const { data: created, error: createError } = await admin.auth.admin.createUser({
+      email: correo,
+      password,
+      email_confirm: true,
     })
-    if (inviteError) return json(400, { error: inviteError.message })
+    if (createError) return json(400, { error: createError.message })
 
     const { data: profile, error: profileError } = await admin
       .from('profiles')
       .insert({
-        auth_user_id: invited.user.id,
+        auth_user_id: created.user.id,
         nombre,
         apellido,
         correo,
@@ -90,7 +93,7 @@ Deno.serve(async (req) => {
       .single()
     if (profileError) {
       // Sin perfil la cuenta de Auth queda huérfana: se revierte para no dejar estado a medias.
-      await admin.auth.admin.deleteUser(invited.user.id)
+      await admin.auth.admin.deleteUser(created.user.id)
       return json(400, { error: profileError.message })
     }
 

@@ -1,10 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { IS_DEMO_DATA } from '@/app/config/constants'
-import { ROUTES } from '@/app/router/routes'
 import { type ProfileFilters, profilesRepository } from '@/data/repositories/profiles.repository'
 import { queryKeys } from '@/lib/query/queryKeys'
 import { supabase } from '@/lib/supabaseClient'
-import type { UserFormValues } from '../schemas/user.schema'
+import type { CreateUserFormValues, UserFormValues } from '../schemas/user.schema'
 
 export function useUsers(filters?: ProfileFilters) {
   return useQuery({ queryKey: queryKeys.profiles.list(filters), queryFn: () => profilesRepository.list(filters) })
@@ -29,10 +28,11 @@ async function invokeAdminUsers(body: Record<string, unknown>) {
 export function useCreateUser() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (input: UserFormValues) => {
+    mutationFn: async (input: CreateUserFormValues) => {
+      const { password: _password, confirmPassword: _confirmPassword, ...profileFields } = input
       if (IS_DEMO_DATA) {
         return profilesRepository.create({
-          ...input,
+          ...profileFields,
           clinic_id: input.rol === 'admin_general' ? null : (input.clinic_id ?? null),
           auth_user_id: `auth-${crypto.randomUUID()}`,
           creado_en: new Date().toISOString(),
@@ -47,7 +47,7 @@ export function useCreateUser() {
         rol: input.rol,
         clinic_id: input.rol === 'admin_general' ? null : (input.clinic_id ?? null),
         puede_ver_comparaciones: input.puede_ver_comparaciones,
-        redirect_to: `${window.location.origin}${ROUTES.resetPassword}`,
+        password: input.password,
       })
       return data.profile
     },

@@ -16,7 +16,7 @@ import type { Profile } from '@/types/database.types'
 import { UserForm } from '../components/UserForm'
 import { UserTable } from '../components/UserTable'
 import { useCreateUser, useDeleteUser, useUpdateUser, useUsers } from '../hooks/useUsers'
-import type { UserFormValues } from '../schemas/user.schema'
+import type { CreateUserFormValues } from '../schemas/user.schema'
 
 export function UsersPage() {
   const currentProfile = useCurrentProfile()
@@ -35,10 +35,11 @@ export function UsersPage() {
 
   const clinicOptions = (clinicsQuery.data ?? []).map((c) => ({ value: c.id, label: c.nombre_corto }))
 
-  const handleSubmit = async (values: UserFormValues) => {
+  const handleSubmit = async (values: CreateUserFormValues) => {
     try {
       if (editing) {
-        await updateUser.mutateAsync({ id: editing.id, input: values })
+        const { password: _password, confirmPassword: _confirmPassword, ...profileFields } = values
+        await updateUser.mutateAsync({ id: editing.id, input: profileFields })
         toastSuccess('Usuario actualizado')
       } else {
         const confirmed = await confirm({

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import type { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
@@ -8,27 +8,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import type { SelectOption } from '@/types/common.types'
 import type { Profile } from '@/types/database.types'
-import { userSchema, type UserFormValues } from '../schemas/user.schema'
+import { createUserSchema, userSchema, type CreateUserFormValues } from '../schemas/user.schema'
 
-type FormInput = z.input<typeof userSchema>
+type FormInput = z.input<typeof createUserSchema>
 
 interface UserFormProps {
   user?: Profile
   clinicOptions: SelectOption[]
-  onSubmit: (values: UserFormValues) => Promise<void> | void
+  onSubmit: (values: CreateUserFormValues) => Promise<void> | void
   onCancel: () => void
   isSubmitting?: boolean
 }
 
 export function UserForm({ user, clinicOptions, onSubmit, onCancel, isSubmitting }: UserFormProps) {
+  const isCreating = !user
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     formState: { errors },
-  } = useForm<FormInput, unknown, UserFormValues>({
-    resolver: zodResolver(userSchema),
+  } = useForm<FormInput, unknown, CreateUserFormValues>({
+    resolver: zodResolver(isCreating ? createUserSchema : userSchema) as unknown as Resolver<FormInput, unknown, CreateUserFormValues>,
     defaultValues: user
       ? {
           nombre: user.nombre,
@@ -39,7 +40,13 @@ export function UserForm({ user, clinicOptions, onSubmit, onCancel, isSubmitting
           puede_ver_comparaciones: user.puede_ver_comparaciones,
           estado: user.estado,
         }
-      : { rol: 'usuario_clinica', puede_ver_comparaciones: false, estado: 'activo' },
+      : {
+          rol: 'usuario_clinica',
+          puede_ver_comparaciones: false,
+          estado: 'activo',
+          password: '',
+          confirmPassword: '',
+        },
   })
 
   const rol = watch('rol')
@@ -68,10 +75,30 @@ export function UserForm({ user, clinicOptions, onSubmit, onCancel, isSubmitting
         <FieldError errors={errors.correo ? [errors.correo] : undefined} />
       </Field>
 
+      {isCreating ? (
+        <div className="grid grid-cols-2 gap-3.5">
+          <Field data-invalid={!!errors.password}>
+            <FieldLabel htmlFor="u_password">Nueva contraseña</FieldLabel>
+            <Input id="u_password" type="password" aria-invalid={!!errors.password} {...register('password')} />
+            <FieldError errors={errors.password ? [errors.password] : undefined} />
+          </Field>
+          <Field data-invalid={!!errors.confirmPassword}>
+            <FieldLabel htmlFor="u_confirm_password">Repetir contraseña</FieldLabel>
+            <Input
+              id="u_confirm_password"
+              type="password"
+              aria-invalid={!!errors.confirmPassword}
+              {...register('confirmPassword')}
+            />
+            <FieldError errors={errors.confirmPassword ? [errors.confirmPassword] : undefined} />
+          </Field>
+        </div>
+      ) : null}
+
       <div className="grid grid-cols-2 gap-3.5">
         <Field>
           <FieldLabel htmlFor="u_rol">Rol</FieldLabel>
-          <Select value={rol} onValueChange={(v) => setValue('rol', v as UserFormValues['rol'])}>
+          <Select value={rol} onValueChange={(v) => setValue('rol', v as CreateUserFormValues['rol'])}>
             <SelectTrigger id="u_rol" className="w-full">
               <SelectValue />
             </SelectTrigger>
